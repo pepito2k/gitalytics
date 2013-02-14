@@ -1,1 +1,5 @@
-# This is my README
+
+gitalytics
+==========
+
+Git analytics ruby gem
