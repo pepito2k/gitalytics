@@ -1,3 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'gitalytics'
+
+Dir.chdir($1 || '.')
+g   = Gitalytics.new
+res = g.log_to_hash
+g.output_summary_report(res)
