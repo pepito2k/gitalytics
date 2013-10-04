@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
-
-require 'gitalytics'
+require File.expand_path("../../lib/gitalytics.rb", __FILE__)
 
 Dir.chdir($1 || '.')
 g   = Gitalytics.new

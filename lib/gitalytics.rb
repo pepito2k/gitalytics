@@ -1,3 +1,5 @@
+require 'date'
+
 class Gitalytics
   def log_to_hash
     docs = []
