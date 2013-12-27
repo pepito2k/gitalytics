@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    gitalytics (0.0.1)
+    gitalytics (0.0.2)
 
 GEM
   remote: https://rubygems.org/

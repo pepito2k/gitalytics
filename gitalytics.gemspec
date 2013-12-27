@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name        = 'gitalytics'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.executables << 'gitalytics'
-  s.date        = '2012-12-04'
+  s.date        = '2013-12-27'
   s.summary     = "Git Analytics"
   s.description = "Get usefull analytics from your git log"
   s.authors     = ["Gonzalo Robaina"]
@@ -10,4 +10,5 @@ Gem::Specification.new do |s|
   s.files       = ["lib/gitalytics.rb"]
   s.homepage    =
     'http://rubygems.org/gems/gitalytics'
+  s.license     = 'MIT'
 end

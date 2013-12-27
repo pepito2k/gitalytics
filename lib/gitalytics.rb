@@ -2,19 +2,19 @@ require 'date'
 
 class Gitalytics
   def log_to_hash
-    docs = []
-    cmd  = "git log --pretty='%cn|%cd|%s'"
-    res  = `#{cmd}`
+    lines   = []
+    command = "git log --pretty='%cn|%cd|%s'"
+    result  = `#{command}`
 
-    res.each_line do |line|
+    result.each_line do |line|
       parts = line.split('|')
-      docs << {:username => parts[0], :date => Date.parse(parts[1]), :subject => parts[2]}
+      lines << {:username => parts[0], :date => Date.parse(parts[1]), :subject => parts[2]}
     end
 
     return  {
-      :users => docs.map{|r| r[:username]}.uniq,
-      :dates => docs.map{|r| r[:date]}.uniq,
-      :records => docs
+      :users => lines.map{|r| r[:username]}.uniq,
+      :dates => lines.map{|r| r[:date]}.uniq,
+      :records => lines
     }
   end
 
