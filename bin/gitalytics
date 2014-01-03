@@ -1,7 +1,22 @@
 #!/usr/bin/env ruby
+require 'optparse'
 require File.expand_path("../../lib/gitalytics.rb", __FILE__)
 
+options = {
+  format: 'cli'
+}
+OptionParser.new do |opts|
+  opts.banner = "Usage: gitalytics [options]"
+
+  opts.on("-v", "--version", "Display gem version") do |v|
+    p "Gitalytics #{Gitalytics::VERSION}"
+    exit
+  end
+
+  opts.on("-h", "--html", "Outputs html report") do |v|
+    options[:format] = 'html'
+  end
+end.parse!
+
 Dir.chdir($1 || '.')
-g   = Gitalytics.new
-res = g.log_to_hash
-g.output_summary_report(res)
+Gitalytics.new.analyze(options)
