@@ -6,7 +6,7 @@ require 'digest/md5'
 
 class Gitalytics
 
-  VERSION = '1.0.2'
+  VERSION = '1.0.4'
 
   attr_accessor :data
 
