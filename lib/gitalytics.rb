@@ -1,11 +1,10 @@
 require 'date'
-require 'json'
 require 'erb'
 require 'digest/md5'
 
 class Gitalytics
 
-  VERSION = '1.0.0'
+  VERSION = '1.0.1'
 
   attr_accessor :data
 
@@ -63,7 +62,8 @@ class Gitalytics
         first_date: dates.min,
         last_date: dates.max,
         working_days: dates.uniq.count
-      } }
+      }
+    }
   end
 
 end
