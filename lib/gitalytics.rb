@@ -1,10 +1,12 @@
+# encoding: UTF-8
+
 require 'date'
 require 'erb'
 require 'digest/md5'
 
 class Gitalytics
 
-  VERSION = '1.0.1'
+  VERSION = '1.0.2'
 
   attr_accessor :data
 
