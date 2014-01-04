@@ -7,6 +7,8 @@ Based on gist by Tobin Harris: https://gist.github.com/tobinharris/396634
 [![Gem Version](https://badge.fury.io/rb/gitalytics.png)](http://badge.fury.io/rb/gitalytics)
 [![Dependency Status](https://gemnasium.com/pepito2k/gitalytics.png)](https://gemnasium.com/pepito2k/gitalytics)
 
+![Gitalytics Screenshot](http://photos.gonzalo.robaina.me/gitalytics_screen.png "Gitalytics Screenshot")
+
 ## Installation
 
 ### Add gem to your Gemfile.
@@ -21,6 +23,11 @@ Based on gist by Tobin Harris: https://gist.github.com/tobinharris/396634
 Open a terminal window pointing to your git repository and just run the gitalytics command:
 
     $ gitalytics
+
+If you'd like to get a fancy html report like the one in the screenshot above, you will need to run the following command:
+
+    $ gitalytics -h
+    
 
 ## License
 Copyright (c) 2013 Gonzalo Robaina
