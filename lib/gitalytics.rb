@@ -53,7 +53,7 @@ class Gitalytics
   def get_user_data(lines)
     users = lines.map{ |r| [r[:name], r[:email]] }.uniq
     users.map{ |u|
-      commits = lines.select{ |r| r[:name] == u[0] }
+      commits = lines.select{ |r| r[:email] == u[1] }
       dates = commits.map{ |c| c[:date] }
       {
         name: u[0],
