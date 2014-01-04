@@ -62,7 +62,13 @@
       }
 
       .media {
+        height: 125px;
         margin-bottom: 20px;
+      }
+
+      .media-body {
+        color: #444;
+        font-size: 12px;
       }
 
       .dp {
@@ -127,7 +133,7 @@
                       <img class="media-object dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user[:gravatar]}" %>" style="width: 100px; height:100px; border-color:<%= "##{user[:color]}" %>">
                   </a>
                   <div class="media-body">
-                      <h4 class="media-heading"><%= user[:name] %></h4>
+                      <h4 class="media-heading"><%= user[:name] %><br><small><%= user[:email] %></small></h4>
                       <hr style="margin:8px auto">
                       <%= "#{user[:commits].count} commits between #{(user[:last_date] - user[:first_date]).to_i + 1} days." %>
                       <%= "He did something useful on #{user[:working_days]} of those days." %>

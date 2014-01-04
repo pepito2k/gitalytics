@@ -27,7 +27,7 @@ class Gitalytics
   private
   def log_to_hash
     lines   = []
-    command = "git log --pretty='%cn|%ce|%cd|%s'"
+    command = "git log --pretty='%cn|%ce|%cd|%s' --reverse"
     result  = `#{command}`
 
     result.each_line do |line|
@@ -51,14 +51,15 @@ class Gitalytics
   end
 
   def get_user_data(lines)
-    users = lines.map{ |r| [r[:name], r[:email]] }.uniq
-    users.map{ |u|
-      commits = lines.select{ |r| r[:email] == u[1] }
+    users = {}
+    lines.each{ |r| users[r[:email]] = r[:name] }
+    users.map{ |email, name|
+      commits = lines.select{ |r| r[:email] == email }
       dates = commits.map{ |c| c[:date] }
       {
-        name: u[0],
-        email: u[1],
-        gravatar: Digest::MD5.hexdigest(u[1]),
+        name: name,
+        email: email,
+        gravatar: Digest::MD5.hexdigest(email),
         color: "%06x" % (rand * 0xffffff),
         commits: commits,
         first_date: dates.min,
