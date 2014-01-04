@@ -61,8 +61,18 @@
         padding-right: 15px;
       }
 
-      code {
-        font-size: 80%;
+      .dp {
+        box-sizing: border-box;
+        border:10px solid #eee;
+        transition: all 0.2s ease-in-out;
+      }
+
+      .dp:hover {
+        border:2px solid #eee;
+        transform:rotate(360deg);
+        -ms-transform:rotate(360deg);
+        -webkit-transform:rotate(360deg);
+        /*-webkit-font-smoothing:antialiased;*/
       }
 
     </style>
@@ -99,34 +109,29 @@
       <div class="container">
         <div class="page-header">
           <h1>User stats</h1>
+          <p class="lead">Compare the quantity of commits made by each of your repository contributors.<br/> Check who is writing most of the code of your project and maybe give him/her a prize! ;)</p>
         </div>
-        <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur egestas enim quis venenatis tincidunt. Pellentesque iaculis est in tempor rutrum. Nullam elementum dolor quis sem convallis egestas. Suspendisse volutpat congue lacinia.</p>
-        <canvas id="myChart" width="400" height="400"></canvas>
-        <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Gravatar</th>
-          </tr>
-        </thead>
-        <tbody>
+
+        <div class="col-md-5">
+          <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-7">
           <% @data[:users].each_with_index do |user, i| %>
-            <tr>
-              <td><%= i + 1 %></td>
-              <td>
-                <span class="badge" style="background-color: <%= "##{user[:color]}" %>">&nbsp;</span>
-                <%= user[:name] %>
-              </td>
-              <td><%= user[:email] %></td>
-              <td>
-                <img src="<%= "http://www.gravatar.com/avatar/#{user[:gravatar]}" %>" class="img-circle">
-              </td>
-            </tr>
+            <div class="col-md-6">
+               <div class="media">
+                  <a class="pull-left" href="#">
+                      <img class="media-object dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user[:gravatar]}" %>" style="width: 100px; height:100px; border-color:<%= "##{user[:color]}" %>">
+                  </a>
+                  <div class="media-body">
+                      <h4 class="media-heading"><%= user[:name] %></h4>
+                      <hr style="margin:8px auto">
+                      <%= "#{user[:commits].count} commits between #{(user[:last_date] - user[:first_date]).to_i + 1} days." %>
+                      <%= "He did something useful on #{user[:working_days]} of those days." %>
+                  </div>
+              </div>
+            </div>
           <% end %>
-        </tbody>
-      </table>
+        </div>
       </div>
     </div>
 

@@ -5,7 +5,7 @@ require 'digest/md5'
 
 class Gitalytics
 
-  VERSION = '1.0.0a'
+  VERSION = '1.0.0'
 
   attr_accessor :data
 
@@ -17,12 +17,13 @@ class Gitalytics
     log_to_hash
     case options[:format]
     when 'html'
-      write_html_report
+      output_html_report
     else
-      output_summary_report
+      output_cli_report
     end
   end
 
+  private
   def log_to_hash
     lines   = []
     command = "git log --pretty='%cn|%ce|%cd|%s'"
@@ -34,37 +35,35 @@ class Gitalytics
     end
 
     @data[:users] = get_user_data(lines)
-
   end
 
-  def output_summary_report #TODO: FIX THIS METHOD TO USE @data
-    res[:users].each do |user|
-      dates_for_user = res[:records].select{|r| r[:name] == user}.map{|r| r[:date]}
-      commit_count   = dates_for_user.count
-      date_count     = dates_for_user.uniq.count
-      first_date     = dates_for_user.min
-      last_date      = dates_for_user.max
-      puts "#{user} has made #{commit_count} commits over the last #{last_date-first_date} days. He did something useful on #{date_count} of those days."
+  def output_cli_report
+    @data[:users].each do |user|
+      puts "#{user[:name]} has made #{user[:commits].count} commits between #{(user[:last_date] - user[:first_date]).to_i + 1} days. He did something useful on #{user[:working_days]} of those days."
     end
   end
 
-  def write_html_report
+  def output_html_report
     template_file = File.read(File.join(File.dirname(__FILE__), "..", "assets", "gitalytics.html.erb"))
     erb = ERB.new(template_file)
     File.open("gitalytics_result.html", 'w+') { |file| file.write(erb.result(binding)) }
   end
 
-  private
   def get_user_data(lines)
-    users = lines.map{|r| [r[:name], r[:email]]}.uniq
-    users.map{ |u| {
-      name: u[0],
-      email: u[1],
-      gravatar: Digest::MD5.hexdigest(u[1]),
-      color: "%06x" % (rand * 0xffffff),
-      commits: lines.select{ |r| r[:name] == u[0] }
-    } }
+    users = lines.map{ |r| [r[:name], r[:email]] }.uniq
+    users.map{ |u|
+      commits = lines.select{ |r| r[:name] == u[0] }
+      dates = commits.map{ |c| c[:date] }
+      {
+        name: u[0],
+        email: u[1],
+        gravatar: Digest::MD5.hexdigest(u[1]),
+        color: "%06x" % (rand * 0xffffff),
+        commits: commits,
+        first_date: dates.min,
+        last_date: dates.max,
+        working_days: dates.uniq.count
+      } }
   end
-
 
 end
