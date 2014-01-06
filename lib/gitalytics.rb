@@ -6,16 +6,16 @@ require 'digest/md5'
 
 class Gitalytics
 
-  VERSION = '1.0.4'
+  VERSION = '1.0.5'
 
   attr_accessor :data
 
   def initialize
-    @data = {}
+    @data = { commits: [], users: [] }
   end
 
   def analyze(options)
-    log_to_hash
+    parse_git_log
     case options[:format]
     when 'html'
       output_html_report
@@ -25,22 +25,30 @@ class Gitalytics
   end
 
   private
-  def log_to_hash
-    lines   = []
-    command = "git log --pretty='%cn|%ce|%cd|%s' --reverse"
-    result  = `#{command}`
+  def parse_git_log
+    result  = `git log --stat`
 
     result.each_line do |line|
-      parts = line.split('|')
-      lines << { name: parts[0], email: parts[1], date: Date.parse(parts[2]), subject: parts[3]}
+      if match = line.match(/^commit ([0-9a-z]*)$/)
+        @data[:commits] << Commit.new(match[1])
+      elsif match = line.match(/^Author: ([\w ]*) <(.*)>$/)
+        user = get_user(match[1], match[2])
+        @data[:commits].last.author = user
+        user.commits << @data[:commits].last
+      elsif match = line.match(/^Date:   (.*)$/)
+        @data[:commits].last.date = Date.parse(match[1])
+      elsif match = line.match(/^    (.*)$/)
+        @data[:commits].last.subject = match[1]
+      elsif match = line.match(/^ ([^ ]+)[ ]+\|[ ]+([\d]+) ([\+]*)([-]*)$/)
+        @data[:commits].last.summary << { filename: match[1], changes: match[2], insertions: match[3], deletions: match[4] }
+      end
     end
 
-    @data[:users] = get_user_data(lines)
   end
 
   def output_cli_report
     @data[:users].each do |user|
-      puts "#{user[:name]} has made #{user[:commits].count} commits between #{(user[:last_date] - user[:first_date]).to_i + 1} days. He did something useful on #{user[:working_days]} of those days."
+      puts "#{user.name} has made #{user.commits.count} commits between #{user.commits_period} days. He did something useful on #{user.working_days} of those days."
     end
   end
 
@@ -50,23 +58,64 @@ class Gitalytics
     File.open("gitalytics_result.html", 'w+') { |file| file.write(erb.result(binding)) }
   end
 
-  def get_user_data(lines)
-    users = {}
-    lines.each{ |r| users[r[:email]] = r[:name] }
-    users.map{ |email, name|
-      commits = lines.select{ |r| r[:email] == email }
-      dates = commits.map{ |c| c[:date] }
-      {
-        name: name,
-        email: email,
-        gravatar: Digest::MD5.hexdigest(email),
-        color: "%06x" % (rand * 0xffffff),
-        commits: commits,
-        first_date: dates.min,
-        last_date: dates.max,
-        working_days: dates.uniq.count
-      }
-    }
+  def get_user(name, email)
+    @data[:users].each do |u|
+      return u if u.email == email
+    end
+    @data[:users] << new_user = User.new(name, email)
+    new_user
+  end
+
+end
+
+class User
+
+  attr_accessor :name, :email, :commits, :color
+
+  def initialize(name, email)
+    self.name = name
+    self.email = email
+    self.commits = []
+    self.color = "%06x" % (rand * 0xffffff)
+  end
+
+  def gravatar
+    Digest::MD5.hexdigest(email)
+  end
+
+  def first_commit
+    commits.min_by(&:date)
+  end
+
+  def last_commit
+    commits.max_by(&:date)
+  end
+
+  def commits_period
+    (last_commit.date - first_commit.date).to_i + 1
+  end
+
+  def working_days
+    commits.map(&:date).uniq.count
+  end
+
+end
+
+class Commit
+
+  attr_accessor :hash, :author, :date, :subject, :summary
+
+  def initialize(hash)
+    self.hash = hash
+    self.summary = []
+  end
+
+  def insertions
+    summary.map{ |s| s[:insertions].length }.inject(0){ |total, current| total + current }
+  end
+
+  def deletions
+    summary.map{ |s| s[:deletions].length }.inject(0){ |total, current| total + current }
   end
 
 end

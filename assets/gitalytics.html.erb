@@ -130,13 +130,13 @@
             <div class="col-md-6">
                <div class="media">
                   <a class="pull-left" href="#">
-                      <img class="media-object dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user[:gravatar]}" %>" style="width: 100px; height:100px; border-color:<%= "##{user[:color]}" %>">
+                      <img class="media-object dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user.gravatar}" %>" style="width: 100px; height:100px; border-color:<%= "##{user.color}" %>">
                   </a>
                   <div class="media-body">
-                      <h4 class="media-heading"><%= user[:name] %><br><small><%= user[:email] %></small></h4>
+                      <h4 class="media-heading"><%= user.name %><br><small><%= user.email %></small></h4>
                       <hr style="margin:8px auto">
-                      <%= "#{user[:commits].count} commits between #{(user[:last_date] - user[:first_date]).to_i + 1} days." %>
-                      <%= "He did something useful on #{user[:working_days]} of those days." %>
+                      <%= "#{user.commits.count} commits between #{user.commits_period} days." %>
+                      <%= "He did something useful on #{user.working_days} of those days." %>
                   </div>
               </div>
             </div>
@@ -147,7 +147,7 @@
 
     <div id="footer">
       <div class="container">
-        <p class="text-muted">Gitalytics by <a href="http://gonzalo.robaina.me">Gonzalo Robaina</a></p>
+        <p class="text-muted">Gitalytics v<%= VERSION %> by <a href="http://gonzalo.robaina.me">Gonzalo Robaina</a></p>
       </div>
     </div>
 
@@ -159,7 +159,7 @@
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js"></script>
     <script>
-      var data = [<%= @data[:users].map{|d| "{ value: #{d[:commits].count}, color: '##{d[:color]}' }" }.join(',') %>];
+      var data = [<%= @data[:users].map{|d| "{ value: #{d.commits.count}, color: '##{d.color}' }" }.join(',') %>];
       var ctx = document.getElementById("myChart").getContext("2d");
       var myNewChart = new Chart(ctx).Pie(data);
     </script>
