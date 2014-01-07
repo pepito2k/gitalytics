@@ -29,9 +29,11 @@ class Gitalytics
     result = `git log --stat`
 
     result.each_line do |line|
+      line.encode!('UTF-8', 'UTF8-MAC')
+
       if match = line.match(/^commit ([0-9a-z]*)$/)
         @data[:commits] << Commit.new(match[1])
-      elsif match = line.match(/^Author: ([\w ]*) <(.*)>$/)
+      elsif match = line.match(/^Author: ([[:alpha:] ]*) <(.*)>$/)
         user = get_user(match[1], match[2])
         @data[:commits].last.author = user
         user.commits << @data[:commits].last
