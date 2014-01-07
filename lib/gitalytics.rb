@@ -26,7 +26,7 @@ class Gitalytics
 
   private
   def parse_git_log
-    result = `git log --stat`
+    result = `git log --stat --format=`
 
     result.each_line do |line|
       if match = line.match(/^commit ([0-9a-z]*)$/)
