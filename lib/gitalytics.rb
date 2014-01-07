@@ -29,7 +29,7 @@ class Gitalytics
     result = `git log --stat`
 
     result.each_line do |line|
-      line.encode!('UTF-8', 'UTF8-MAC')
+      line.encode!('UTF-8', 'UTF8-MAC') if defined?(Encoding::UTF8_MAC)
 
       if match = line.match(/^commit ([0-9a-z]*)$/)
         @data[:commits] << Commit.new(match[1])
