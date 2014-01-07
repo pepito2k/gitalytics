@@ -123,7 +123,7 @@
         </div>
 
         <div class="col-md-5">
-          <canvas id="myChart" width="400" height="400"></canvas>
+          <canvas id="usersPieChart" width="400" height="400"></canvas>
         </div>
         <div class="col-md-7">
           <% @data[:users].each_with_index do |user, i| %>
@@ -160,7 +160,7 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js"></script>
     <script>
       var data = [<%= @data[:users].map{|d| "{ value: #{d.commits.count}, color: '##{d.color}' }" }.join(',') %>];
-      var ctx = document.getElementById("myChart").getContext("2d");
+      var ctx = document.getElementById("usersPieChart").getContext("2d");
       var myNewChart = new Chart(ctx).Pie(data);
     </script>
   </body>
