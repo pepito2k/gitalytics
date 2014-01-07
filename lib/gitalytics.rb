@@ -6,7 +6,7 @@ require 'digest/md5'
 
 class Gitalytics
 
-  VERSION = '1.0.5'
+  VERSION = '1.1.0'
 
   attr_accessor :data
 
@@ -26,7 +26,7 @@ class Gitalytics
 
   private
   def parse_git_log
-    result  = `git log --stat`
+    result = `git log --stat`
 
     result.each_line do |line|
       if match = line.match(/^commit ([0-9a-z]*)$/)
@@ -48,7 +48,7 @@ class Gitalytics
 
   def output_cli_report
     @data[:users].each do |user|
-      puts "#{user.name} has made #{user.commits.count} commits between #{user.commits_period} days. He did something useful on #{user.working_days} of those days."
+      puts user.summary
     end
   end
 
@@ -70,13 +70,13 @@ end
 
 class User
 
-  attr_accessor :name, :email, :commits, :color
+  attr_accessor :name, :email, :commits, :colors
 
   def initialize(name, email)
     self.name = name
     self.email = email
     self.commits = []
-    self.color = "%06x" % (rand * 0xffffff)
+    self.colors = [rand(255), rand(255), rand(255)].join(', ')
   end
 
   def gravatar
@@ -97,6 +97,30 @@ class User
 
   def working_days
     commits.map(&:date).uniq.count
+  end
+
+  def total_insertions
+    commits.map(&:insertions).inject(0) { |total, current| total + current }
+  end
+
+  def total_deletions
+    commits.map(&:deletions).inject(0) { |total, current| total + current }
+  end
+
+  def summary
+    "#{name} has made #{commits.count} commits between #{commits_period} days. He/she did something useful on #{working_days} of those days."
+  end
+
+  def rgba(opacity = 1)
+    "rgba(#{colors}, #{opacity})"
+  end
+
+  def weekday_commits
+    days = Array.new(7) {0}
+    commits.each do |c|
+      days[c.date.wday] += 1
+    end
+    days
   end
 
 end

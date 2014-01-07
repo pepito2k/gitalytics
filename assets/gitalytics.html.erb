@@ -61,14 +61,8 @@
         padding-right: 15px;
       }
 
-      .media {
-        height: 125px;
-        margin-bottom: 20px;
-      }
-
-      .media-body {
-        color: #444;
-        font-size: 12px;
+      .user-avatar {
+        margin: 0 10px 10px 0;
       }
 
       .dp {
@@ -118,30 +112,27 @@
       <!-- Begin page content -->
       <div class="container">
         <div class="page-header">
-          <h1>User stats</h1>
+          <h1>Users</h1>
           <p class="lead">Compare the quantity of commits made by each of your repository contributors.<br/> Check who is writing most of the code of your project and maybe give him/her a prize! ;)</p>
-        </div>
-
-        <div class="col-md-5">
-          <canvas id="usersPieChart" width="400" height="400"></canvas>
-        </div>
-        <div class="col-md-7">
-          <% @data[:users].each_with_index do |user, i| %>
-            <div class="col-md-6">
-               <div class="media">
-                  <a class="pull-left" href="#">
-                      <img class="media-object dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user.gravatar}" %>" style="width: 100px; height:100px; border-color:<%= "##{user.color}" %>">
-                  </a>
-                  <div class="media-body">
-                      <h4 class="media-heading"><%= user.name %><br><small><%= user.email %></small></h4>
-                      <hr style="margin:8px auto">
-                      <%= "#{user.commits.count} commits between #{user.commits_period} days." %>
-                      <%= "He did something useful on #{user.working_days} of those days." %>
-                  </div>
-              </div>
-            </div>
+          <% @data[:users].each do |user| %>
+            <a href="#" title="<%= user.name %> <small><%= user.email %></small>" class="user-avatar" data-content="<%= user.summary %>">
+              <img class="dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user.gravatar}" %>" style="width: 100px; height:100px; border-color:<%= user.rgba %>"></a>
           <% end %>
         </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <h2>Commits count per user</h2>
+            <canvas id="usersPieChart" width="550" height="400"></canvas>
+          </div>
+          <div class="col-md-6">
+            <h2>Commits per weekday per user</h2>
+            <canvas id="usersRadarChart" width="550" height="400"></canvas>
+          </div>
+        </div>
+        <hr>
+          <h2>Insertions vs. Deletions</h2>
+          <canvas id="usersBarChart" width="1100" height="400"></canvas>
       </div>
     </div>
 
@@ -159,9 +150,51 @@
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js"></script>
     <script>
-      var data = [<%= @data[:users].map{|d| "{ value: #{d.commits.count}, color: '##{d.color}' }" }.join(',') %>];
+      $('.user-avatar').popover({ trigger: 'hover', html: true }).click(function(e){
+        e.preventDefault();
+      });
+
+      // Data for Users Pie Chart
+      var data = [<%= @data[:users].map{|d| "{ value: #{d.commits.count}, color: '#{d.rgba}' }" }.join(',') %>];
       var ctx = document.getElementById("usersPieChart").getContext("2d");
-      var myNewChart = new Chart(ctx).Pie(data);
+      var usersPieChart = new Chart(ctx).Pie(data);
+
+      // Data for Insertions vs. Deletions Bar Chart
+      var data = {
+        labels: [<%= @data[:users].map{|d| "'#{d.name}'" }.join(',') %>],
+        datasets: [
+          {
+            data: [<%= @data[:users].map{|d| "#{d.total_insertions}" }.join(',') %>],
+            fillColor: 'rgba(196, 234, 44, 0.5)',
+            strokeColor: 'rgba(196, 234, 44, 1)'
+          },
+          {
+            data: [<%= @data[:users].map{|d| "#{d.total_deletions}" }.join(',') %>],
+            fillColor: 'rgba(234, 80, 44, 0.5)',
+            strokeColor: 'rgba(234, 80, 44, 1)'
+          }
+        ]
+      };
+      var ctx = document.getElementById("usersBarChart").getContext("2d");
+      var usersBarChart = new Chart(ctx).Bar(data);
+
+      // Data for Weekday commits per user
+      var data = {
+        labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        datasets: [
+          <% @data[:users].each_with_index do |user, i| %>
+          {
+            fillColor : "<%= user.rgba('0.5') %>",
+            strokeColor : "<%= user.rgba %>",
+            pointColor : "<%= user.rgba %>",
+            pointStrokeColor : "#fff",
+            data : [<%= user.weekday_commits.join(', ') %>]
+          }<%= ',' unless i + 1 == @data[:users].count %>
+          <% end %>
+        ]
+      };
+      var ctx = document.getElementById("usersRadarChart").getContext("2d");
+      var usersRadarChart = new Chart(ctx).Radar(data);
     </script>
   </body>
 </html>
