@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'gitalytics'
-  s.version     = '1.1.0'
+  s.version     = '1.1.1'
   s.executables << 'gitalytics'
   s.date        = '2014-01-07'
   s.summary     = "Git Analytics"

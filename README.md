@@ -11,11 +11,16 @@ Based on gist by Tobin Harris: https://gist.github.com/tobinharris/396634
 
 ## Installation
 
-### Add gem to your Gemfile.
+### Manual installation
+
+    gem install gitalytics
+
+### Using bundler
+Add gitalytics to your Gemfile
 
     gem "gitalytics"
 
-### Install the gem
+Install  the gem
 
     bundle install
 
