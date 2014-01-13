@@ -57,7 +57,16 @@ class Gitalytics
   def output_html_report
     template_file = File.read(File.join(File.dirname(__FILE__), "..", "assets", "gitalytics.html.erb"))
     erb = ERB.new(template_file)
-    File.open("gitalytics_result.html", 'w+') { |file| file.write(erb.result(binding)) }
+    output_file = "gitalytics_result.html"
+    File.open(output_file, 'w+') { |file| file.write(erb.result(binding)) }
+	host = RbConfig::CONFIG['host_os']
+	if host =~ /mswin|mingw|cygwin/
+	  system "start #{output_file}"
+	elsif host =~ /darwin/
+	  system "open #{output_file}"
+	elsif host =~ /linux|bsd/
+	  system "xdg-open #{output_file}"
+	end
   end
 
   def get_user(name, email)
