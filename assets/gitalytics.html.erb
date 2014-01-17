@@ -114,7 +114,7 @@
         <div class="page-header">
           <h1>Users</h1>
           <p class="lead">Compare the quantity of commits made by each of your repository contributors.<br/> Check who is writing most of the code of your project and maybe give him/her a prize! ;)</p>
-          <% @data[:users].each do |user| %>
+          <% @users.each do |user| %>
             <a href="#" title="<%= user.name %> <small><%= user.email %></small>" class="user-avatar" data-content="<%= user.summary %>">
               <img class="dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user.gravatar}" %>" style="width: 100px; height:100px; border-color:<%= user.rgba %>"></a>
           <% end %>
@@ -155,21 +155,21 @@
       });
 
       // Data for Users Pie Chart
-      var data = [<%= @data[:users].map{|d| "{ value: #{d.commits.count}, color: '#{d.rgba}' }" }.join(',') %>];
+      var data = [<%= @users.map{|d| "{ value: #{d.commits.count}, color: '#{d.rgba}' }" }.join(',') %>];
       var ctx = document.getElementById("usersPieChart").getContext("2d");
       var usersPieChart = new Chart(ctx).Pie(data);
 
       // Data for Insertions vs. Deletions Bar Chart
       var data = {
-        labels: [<%= @data[:users].map{|d| "'#{d.name}'" }.join(',') %>],
+        labels: [<%= @users.map{|d| "'#{d.name}'" }.join(',') %>],
         datasets: [
           {
-            data: [<%= @data[:users].map{|d| "#{d.total_insertions}" }.join(',') %>],
+            data: [<%= @users.map{|d| "#{d.total_insertions}" }.join(',') %>],
             fillColor: 'rgba(196, 234, 44, 0.5)',
             strokeColor: 'rgba(196, 234, 44, 1)'
           },
           {
-            data: [<%= @data[:users].map{|d| "#{d.total_deletions}" }.join(',') %>],
+            data: [<%= @users.map{|d| "#{d.total_deletions}" }.join(',') %>],
             fillColor: 'rgba(234, 80, 44, 0.5)',
             strokeColor: 'rgba(234, 80, 44, 1)'
           }
@@ -182,14 +182,14 @@
       var data = {
         labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
         datasets: [
-          <% @data[:users].each_with_index do |user, i| %>
+          <% @users.each_with_index do |user, i| %>
           {
             fillColor : "<%= user.rgba('0.5') %>",
             strokeColor : "<%= user.rgba %>",
             pointColor : "<%= user.rgba %>",
             pointStrokeColor : "#fff",
             data : [<%= user.weekday_commits.join(', ') %>]
-          }<%= ',' unless i + 1 == @data[:users].count %>
+          }<%= ',' unless i + 1 == @users.count %>
           <% end %>
         ]
       };
