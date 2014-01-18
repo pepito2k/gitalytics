@@ -79,6 +79,18 @@
         /*-webkit-font-smoothing:antialiased;*/
       }
 
+      .dashboard-box {
+        background-color: #f3f3f3;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .dashboard-box .glyphicon {
+        font-size: 48px;
+      }
+
     </style>
   </head>
 
@@ -101,9 +113,9 @@
           </div>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Users</a></li>
-              <!-- <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li> -->
+              <li class="active"><a href="#dashboard" data-toggle="tab">Dashboard</a></li>
+              <li><a href="#authors" data-toggle="tab">Authors</a></li>
+              <!-- <li><a href="#contact">Contact</a></li> -->
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -111,28 +123,84 @@
 
       <!-- Begin page content -->
       <div class="container">
-        <div class="page-header">
-          <h1>Users</h1>
-          <p class="lead">Compare the quantity of commits made by each of your repository contributors.<br/> Check who is writing most of the code of your project and maybe give him/her a prize! ;)</p>
-          <% @users.each do |user| %>
-            <a href="#" title="<%= user.name %> <small><%= user.email %></small>" class="user-avatar" data-content="<%= user.summary %>">
-              <img class="dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user.gravatar}" %>" style="width: 100px; height:100px; border-color:<%= user.rgba %>"></a>
-          <% end %>
-        </div>
+        <div class="tab-content">
+          <div class="tab-pane active" id="dashboard">
+            <div class="page-header">
+              <h1>Dashboard</h1>
+              <p class="lead">A quick overview of the activity on your git repository.</p>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="dashboard-box">
+                  <span class="glyphicon glyphicon-user"></span><br>
+                  <%= @users.count %>
+                  authors
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="dashboard-box">
+                  <span class="glyphicon glyphicon-list"></span><br>
+                  <%= @commits.count %>
+                  commits
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="dashboard-box">
+                  <span class="glyphicon glyphicon-file"></span><br>
+                  <%= @commits.map{ |c| c.files_committed }.flatten.uniq.compact.count %>
+                  files committed
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="dashboard-box">
+                  <span class="glyphicon glyphicon-plus"></span><br>
+                  <%= @commits.map{ |c| c.insertions }.inject(0){ |total, current| total + current } %>
+                  insertions
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="dashboard-box">
+                  <span class="glyphicon glyphicon-minus"></span><br>
+                  <%= @commits.map{ |c| c.deletions }.inject(0){ |total, current| total + current } %>
+                  deletions
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="dashboard-box">
+                  <span class="glyphicon glyphicon-calendar"></span><br>
+                  <%= (@commits.max_by(&:date).date - @commits.min_by(&:date).date).to_i + 1 %>
+                  days
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane" id="authors">
+            <div class="page-header">
+              <h1>Authors</h1>
+              <p class="lead">Compare the quantity of commits made by each of your repository contributors.<br/> Check who is writing most of the code of your project and maybe give him/her a prize! ;)</p>
+              <% @users.each do |user| %>
+                <a href="#" title="<%= user.name %> <small><%= user.email %></small>" class="user-avatar" data-content="<%= user.summary %>">
+                  <img class="dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user.gravatar}" %>" style="width: 100px; height:100px; border-color:<%= user.rgba %>"></a>
+              <% end %>
+            </div>
 
-        <div class="row">
-          <div class="col-md-6">
-            <h2>Commits count per user</h2>
-            <canvas id="usersPieChart" width="550" height="400"></canvas>
-          </div>
-          <div class="col-md-6">
-            <h2>Commits per weekday per user</h2>
-            <canvas id="usersRadarChart" width="550" height="400"></canvas>
+            <div class="row">
+              <div class="col-md-6">
+                <h2>Commits count per user</h2>
+                <canvas id="usersPieChart" width="550" height="400"></canvas>
+              </div>
+              <div class="col-md-6">
+                <h2>Commits per weekday per user</h2>
+                <canvas id="usersRadarChart" width="550" height="400"></canvas>
+              </div>
+            </div>
+            <hr>
+            <h2>Insertions vs. Deletions</h2>
+            <canvas id="usersBarChart" width="1100" height="400"></canvas>
           </div>
         </div>
-        <hr>
-          <h2>Insertions vs. Deletions</h2>
-          <canvas id="usersBarChart" width="1100" height="400"></canvas>
       </div>
     </div>
 
