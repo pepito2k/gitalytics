@@ -13,13 +13,13 @@ class Gitalytics
   VERSION = '1.1.1'
 
   def analyze(options)
-    users = GitLog.parse_git_log
+    data = GitLog.parse_git_log
 
     case options[:format]
     when 'html'
-      output_html_report(users, options[:browser])
+      output_html_report(data, options[:browser])
     else
-      output_cli_report(users)
+      output_cli_report(data[:users])
     end
   end
 
@@ -31,12 +31,13 @@ class Gitalytics
     end
   end
 
-  def output_html_report(users, open_in_browser)
+  def output_html_report(data, open_in_browser)
     template_file = File.read(File.join(File.dirname(__FILE__), "..", "assets", "gitalytics.html.erb"))
     erb = ERB.new(template_file)
     output_file = "gitalytics_result.html"
     File.open(output_file, 'w+') do |file|
-      @users = users
+      @users = data[:users]
+      @commits = data[:commits]
       file.write(erb.result(binding))
     end
     open_report_in_browser(output_file) if open_in_browser

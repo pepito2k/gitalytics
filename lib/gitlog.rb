@@ -3,16 +3,16 @@ module GitLog
   module_function
 
   def parse_git_log
-    users = []
+    users, commits = [], []
 
     log = get_log
     blocks = get_blocks(log)
 
     blocks.each do |(hash, block_string)|
-      parse_block(hash, block_string, users)
+      commits << parse_block(hash, block_string, users)
     end
 
-    users
+    {users: users, commits: commits}
   end
 
   def get_log
