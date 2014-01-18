@@ -17,7 +17,7 @@ class Gitalytics
 
     case options[:format]
     when 'html'
-      output_html_report(users)
+      output_html_report(users, options[:browser])
     else
       output_cli_report(users)
     end
@@ -31,7 +31,7 @@ class Gitalytics
     end
   end
 
-  def output_html_report(users)
+  def output_html_report(users, open_in_browser)
     template_file = File.read(File.join(File.dirname(__FILE__), "..", "assets", "gitalytics.html.erb"))
     erb = ERB.new(template_file)
     output_file = "gitalytics_result.html"
@@ -39,13 +39,17 @@ class Gitalytics
       @users = users
       file.write(erb.result(binding))
     end
+    open_report_in_browser(output_file) if open_in_browser
+  end
+
+  def open_report_in_browser(filename)
     host = RbConfig::CONFIG['host_os']
     if host =~ /mswin|mingw|cygwin/
-      system "start #{output_file}"
+      system "start #{filename}"
     elsif host =~ /darwin/
-      system "open #{output_file}"
+      system "open #{filename}"
     elsif host =~ /linux|bsd/
-      system "xdg-open #{output_file}"
+      system "xdg-open #{filename}"
     end
   end
 

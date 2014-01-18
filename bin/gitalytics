@@ -5,12 +5,12 @@ Encoding.default_external = Encoding::UTF_8
 $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__) + "/../lib"))
 
 require 'optparse'
-# require File.expand_path("../../lib/gitalytics.rb", __FILE__)
 require 'gitalytics'
 
 options = {
   format: 'cli'
 }
+
 OptionParser.new do |opts|
   opts.banner = "Usage: gitalytics [options]"
 
@@ -19,8 +19,14 @@ OptionParser.new do |opts|
     exit
   end
 
-  opts.on("-h", "--html", "Outputs html report") do |v|
+  opts.on("-h", "--html", "Outputs html report and displays it in default web browser") do |v|
     options[:format] = 'html'
+    options[:browser] = true
+  end
+
+  opts.on("-n", "--no-browser", "Do not open html report in browser") do |v|
+    options[:format] = 'html'
+    options[:browser] = false
   end
 end.parse!
 
