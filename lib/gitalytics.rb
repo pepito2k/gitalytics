@@ -40,7 +40,7 @@ class Gitalytics
       system "start #{output_file}"
     elsif host =~ /darwin/
       system "open #{output_file}"
-    elsif host =~ /linux|bsd/ 
+    elsif host =~ /linux|bsd/
       system "xdg-open #{output_file}"
     end
   end
@@ -113,7 +113,7 @@ module GitLog
 
   def get_commit_author(block_string, commit, users)
     author = block_string.match(/^Author: ([[:alpha:] ]*) <(.*)>$/)
-    user = get_user(author[0], author[1], users)
+    user = get_user(author[1], author[2], users)
 
     commit.author = user
     user.commits << commit
