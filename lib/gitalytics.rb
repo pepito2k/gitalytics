@@ -10,7 +10,7 @@ require 'commit'
 
 class Gitalytics
 
-  VERSION = '1.1.1'
+  VERSION = '1.2.0'
 
   def analyze(options)
     data = GitLog.parse_git_log
