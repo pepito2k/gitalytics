@@ -2,9 +2,11 @@
 # encoding: UTF-8
 
 Encoding.default_external = Encoding::UTF_8
+$LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__) + "/../lib"))
 
 require 'optparse'
-require File.expand_path("../../lib/gitalytics.rb", __FILE__)
+# require File.expand_path("../../lib/gitalytics.rb", __FILE__)
+require 'gitalytics'
 
 options = {
   format: 'cli'
