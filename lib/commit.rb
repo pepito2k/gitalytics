@@ -15,4 +15,8 @@ class Commit
     summary.map{ |s| s[:deletions].length }.inject(0){ |total, current| total + current }
   end
 
+  def files_committed
+    summary.map{ |s| s[:filename] }
+  end
+
 end
