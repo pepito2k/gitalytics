@@ -1,3 +1,7 @@
+require 'commit'
+require 'user'
+require 'date'
+
 module GitLog
 
   module_function
@@ -20,8 +24,8 @@ module GitLog
   end
 
   def get_blocks(log_string)
-    commits = log_string.scan(/^commit [a-f0-9]+$/)
-    blocks = log_string.split(/^commit [a-f0-9]+$/)
+    commits = log_string.scan(/^commit ([a-f0-9]+)$/).map(&:first)
+    blocks = log_string.split(/^commit [a-f0-9]+$/).map(&:strip)
     blocks.shift # get rid of first empty string
 
     commits.zip(blocks)
@@ -59,7 +63,7 @@ module GitLog
   def get_commit_message(block_string, commit)
     message = block_string.match(/^\n(?:\s{4}.*\n)+$/).to_s
     message.gsub!(/\s{4,}/, '')
-    commit.subject = message.lines.first
+    commit.subject = message.lines.first.strip
   end
 
   def get_commit_author(block_string, commit, users)
