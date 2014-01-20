@@ -1,3 +1,5 @@
+require 'digest/md5'
+
 class User
 
   attr_accessor :name, :email, :commits, :colors
