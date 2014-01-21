@@ -61,9 +61,10 @@ module GitLog
   end
 
   def get_commit_message(block_string, commit)
-    message = block_string.match(/^\n(?:\s{4}.*\n)+$/).to_s
-    message.gsub!(/\s{4,}/, '')
-    commit.subject = message.lines.first.strip
+    message = block_string.match(/^\n(?:\s{4}.*\n?)+$/)[0]
+    message.gsub!(/^[ ]{4}/, '').strip!
+    commit.subject = message.lines.first
+    commit.subject.strip!
   end
 
   def get_commit_author(block_string, commit, users)
