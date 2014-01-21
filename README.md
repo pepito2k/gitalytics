@@ -6,6 +6,7 @@ Based on gist by Tobin Harris: https://gist.github.com/tobinharris/396634
 [![Code Climate](https://codeclimate.com/github/pepito2k/gitalytics.png)](https://codeclimate.com/github/pepito2k/gitalytics)
 [![Gem Version](https://badge.fury.io/rb/gitalytics.png)](http://badge.fury.io/rb/gitalytics)
 [![Dependency Status](https://gemnasium.com/pepito2k/gitalytics.png)](https://gemnasium.com/pepito2k/gitalytics)
+[![Build Status](https://travis-ci.org/pepito2k/gitalytics.png)](https://travis-ci.org/pepito2k/gitalytics)
 
 ![Gitalytics Screenshot](http://photos.gonzalo.robaina.me/gitalytics_screen.png "Gitalytics Screenshot")
 
