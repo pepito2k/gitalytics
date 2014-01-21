@@ -131,5 +131,13 @@ Date:   Thu Dec 6 10:29:49 2012 -0200
     assert_equal(users.last.commits.last, commit)
   end
 
+  def test_get_commit_message_with_no_new_line_at_end
+    block_string = "Author: User <email@example.com>\nDate:   Mon Jan 20 00:00:00 2014 -0100\n\n    Some commit\n    \n    A little description"
+    commit = Commit.new('abcdef')
+
+    GitLog.get_commit_message(block_string, commit)
+    assert_equal('Some commit', commit.subject)
+  end
+
 end
 
