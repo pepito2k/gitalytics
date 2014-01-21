@@ -9,15 +9,13 @@ class TestCommit < MiniTest::Unit::TestCase
 
   def build_commit(commit)
     commit.summary << {
-      changes: 5,
-      insertions: '+++',
-      deletions: '--',
+      insertions: 3,
+      deletions: 2,
       filename: 'a.rb'
     }
     commit.summary << {
-      changes: 7,
-      insertions: '++++',
-      deletions: '---',
+      insertions: 4,
+      deletions: 3,
       filename: 'b.rb'
     }
   end

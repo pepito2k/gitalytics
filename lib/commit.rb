@@ -8,11 +8,11 @@ class Commit
   end
 
   def insertions
-    summary.map{ |s| s[:insertions].length }.inject(0){ |total, current| total + current }
+    summary.inject(0) { |total, current| total + current[:insertions] }
   end
 
   def deletions
-    summary.map{ |s| s[:deletions].length }.inject(0){ |total, current| total + current }
+    summary.inject(0) { |total, current| total + current[:deletions] }
   end
 
   def files_committed

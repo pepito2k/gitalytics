@@ -19,27 +19,23 @@ class TestUser < MiniTest::Unit::TestCase
   def create_commits(user)
     user.commits << create_commit('abcdef', '2000-01-10', [{ # weekday: 1
       filename: 'a.rb',
-      changes: 1,
-      insertions: '+',
-      deletions: '',
+      insertions: 1,
+      deletions: 0,
     }])
     user.commits << create_commit('abcdef', '2000-01-01', [{ # weekday: 6
       filename: 'c.rb',
-      changes: 0,
-      insertions: '',
-      deletions: '-',
+      insertions: 0,
+      deletions: 1,
     }])
     user.commits << create_commit('abcdef', '2000-01-01', [{ # weekday: 6
       filename: 'd.rb',
-      changes: 9,
-      insertions: '++++',
-      deletions: '-----'
+      insertions: 4,
+      deletions: 5
     }])
     user.commits << create_commit('abcdef', '2000-01-08', [{ # weekday: 6
       filename: 'e.rb',
-      changes: 2,
-      insertions: '+',
-      deletions: '-'
+      insertions: 1,
+      deletions: 1
     }])
   end
 
