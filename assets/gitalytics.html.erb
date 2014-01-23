@@ -156,14 +156,14 @@
               <div class="col-md-4">
                 <div class="dashboard-box">
                   <span class="glyphicon glyphicon-plus"></span><br>
-                  <%= @commits.map{ |c| c.insertions }.inject(0){ |total, current| total + current } %>
+                  <%= @commits.inject(0) { |total, commit| total + commit.insertions } %>
                   insertions
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="dashboard-box">
                   <span class="glyphicon glyphicon-minus"></span><br>
-                  <%= @commits.map{ |c| c.deletions }.inject(0){ |total, current| total + current } %>
+                  <%= @commits.inject(0) { |total, commit| total + commit.deletions } %>
                   deletions
                 </div>
               </div>
