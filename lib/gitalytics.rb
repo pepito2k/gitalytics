@@ -1,9 +1,6 @@
 # encoding: UTF-8
 
-require 'date'
 require 'erb'
-require 'digest/md5'
-
 require 'gitlog'
 require 'user'
 require 'commit'
