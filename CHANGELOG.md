@@ -1,5 +1,8 @@
 ## Gitalytics Changelog
 
+#### v.1.2.1
+* Fixed bug that prevented gitalytics to initialize correctly (Thanks @willyschwindt)
+
 #### v.1.2.0
 * Git log parser totally refactored (Thanks @grilix)
 * Gitalytics now open html report in browser automatically (Thanks @surendrans)
