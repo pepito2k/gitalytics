@@ -87,6 +87,11 @@
         text-align: center;
       }
 
+      .dashboard-box a {
+        color: #555;
+        text-decoration: none;
+      }
+
       .dashboard-box .glyphicon {
         font-size: 48px;
       }
@@ -132,9 +137,11 @@
             <div class="row">
               <div class="col-md-4">
                 <div class="dashboard-box">
-                  <span class="glyphicon glyphicon-user"></span><br>
-                  <%= @users.count %>
-                  authors
+                  <a href="#authors" data-open-tab="authors">
+                    <span class="glyphicon glyphicon-user"></span><br>
+                    <%= @users.count %>
+                    authors
+                  </a>
                 </div>
               </div>
               <div class="col-md-4">
@@ -263,6 +270,12 @@
       };
       var ctx = document.getElementById("usersRadarChart").getContext("2d");
       var usersRadarChart = new Chart(ctx).Radar(data);
+
+      // Makes dashboard items link to tabs
+      $('a[data-open-tab]').click(function(e) {
+        e.preventDefault(); 
+        $('a[href="#' + $(this).attr('data-open-tab') + '"]').click();
+      });
     </script>
   </body>
 </html>
