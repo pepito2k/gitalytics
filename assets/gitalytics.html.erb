@@ -189,7 +189,7 @@
               <p class="lead">Compare the quantity of commits made by each of your repository contributors.<br/> Check who is writing most of the code of your project and maybe give him/her a prize! ;)</p>
               <% @users.each do |user| %>
                 <a href="#" title="<%= user.name %> <small><%= user.email %></small>" class="user-avatar" data-content="<%= user.summary %>">
-                  <img class="dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user.gravatar}" %>" style="width: 100px; height:100px; border-color:<%= user.rgba %>"></a>
+                  <img class="dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user.gravatar}?d=mm" %>" style="width: 100px; height:100px; border-color:<%= user.rgba %>"></a>
               <% end %>
             </div>
 
