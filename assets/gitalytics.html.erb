@@ -236,7 +236,7 @@
 
       // Data for Insertions vs. Deletions Bar Chart
       var data = {
-        labels: [<%= @users.map{|d| "'#{d.name}'" }.join(',') %>],
+        labels: [<%= @users.map{|d| "'#{d.escaped_name}'" }.join(',') %>],
         datasets: [
           {
             data: [<%= @users.map{|d| "#{d.total_insertions}" }.join(',') %>],
@@ -273,7 +273,7 @@
 
       // Makes dashboard items link to tabs
       $('a[data-open-tab]').click(function(e) {
-        e.preventDefault(); 
+        e.preventDefault();
         $('a[href="#' + $(this).attr('data-open-tab') + '"]').click();
       });
     </script>

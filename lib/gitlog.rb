@@ -16,7 +16,7 @@ module GitLog
       commits << parse_block(hash, block_string, users)
     end
 
-    {users: users, commits: commits}
+    { users: users, commits: commits }
   end
 
   def get_log

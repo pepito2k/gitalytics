@@ -1,14 +1,19 @@
 require 'digest/md5'
+require 'CGI'
 
 class User
 
   attr_accessor :name, :email, :commits, :colors
 
   def initialize(name, email)
-    self.name = name
-    self.email = email
+    self.name    = name
+    self.email   = email
     self.commits = []
-    self.colors = [rand(255), rand(255), rand(255)].join(', ')
+    self.colors  = [rand(255), rand(255), rand(255)].join(', ')
+  end
+
+  def escaped_name
+    CGI.escapeHTML(name)
   end
 
   def gravatar
@@ -49,9 +54,7 @@ class User
 
   def weekday_commits
     days = Array.new(7) {0}
-    commits.each do |c|
-      days[c.date.wday] += 1
-    end
+    commits.each { |c| days[c.date.wday] += 1 }
     days
   end
 

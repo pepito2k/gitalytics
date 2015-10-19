@@ -1,10 +1,10 @@
 Gem::Specification.new do |s|
   s.name        = "gitalytics"
-  s.version     = "1.2.1"
+  s.version     = "1.2.2"
 
   s.executables << "gitalytics"
 
-  s.date        = "2014-01-18"
+  s.date        = "2015-10-19"
   s.summary     = "Git Analytics"
   s.description = "Get usefull analytics from your git log"
   s.authors     = ["Gonzalo Robaina"]

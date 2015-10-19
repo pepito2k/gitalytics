@@ -1,5 +1,10 @@
 ## Gitalytics Changelog
 
+#### v.1.2.2
+* Sort users by commit count
+* Fixed bug when author's name has special characters
+* Minor code style fixes
+
 #### v.1.2.1
 * Fixed bug that prevented gitalytics to initialize correctly (Thanks @willyschwindt)
 
