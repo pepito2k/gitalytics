@@ -33,7 +33,9 @@ class Gitalytics
     erb = ERB.new(template_file)
     output_file = "gitalytics_result.html"
     File.open(output_file, 'w+') do |file|
-      @users = data[:users]
+      @users = data[:users].sort do |x, y|
+        y.commits.length <=> x.commits.length
+      end
       @commits = data[:commits]
       file.write(erb.result(binding))
     end
