@@ -9,7 +9,7 @@ Based on gist by Tobin Harris: https://gist.github.com/tobinharris/396634
 [![Build Status](https://travis-ci.org/pepito2k/gitalytics.png)](https://travis-ci.org/pepito2k/gitalytics)
 [![Coverage Status](https://coveralls.io/repos/pepito2k/gitalytics/badge.png?branch=master)](https://coveralls.io/r/pepito2k/gitalytics?branch=master)
 
-![Gitalytics Screenshot](http://photos.gonzalo.robaina.me/gitalytics_screen.png "Gitalytics Screenshot")
+![Gitalytics Screenshot](http://photos.gonzalo.robaina.me.s3.amazonaws.com/gitalytics_screen.png "Gitalytics Screenshot")
 
 ## Installation
 
