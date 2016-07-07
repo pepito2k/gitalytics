@@ -8,7 +8,9 @@ require 'optparse'
 require 'gitalytics'
 
 options = {
-  format: 'cli'
+  browser: false,
+  format: 'cli',
+  group_by: 'name'
 }
 
 OptionParser.new do |opts|
@@ -28,7 +30,11 @@ OptionParser.new do |opts|
     options[:format] = 'html'
     options[:browser] = false
   end
+
+  opts.on("-e", "--group-email", "Group commits by author's email address") do |v|
+    options[:group_by] = 'email'
+  end
 end.parse!
 
 Dir.chdir($1 || '.')
-Gitalytics.new.analyze(options)
+Gitalytics.analyze(options)

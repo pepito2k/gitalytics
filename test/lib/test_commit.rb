@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper.rb')
 require 'minitest/autorun'
-require 'commit'
+require 'gitalytics/commit'
 
 class TestCommit < MiniTest::Unit::TestCase
 

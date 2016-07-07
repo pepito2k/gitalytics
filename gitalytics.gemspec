@@ -1,22 +1,28 @@
-Gem::Specification.new do |s|
-  s.name        = "gitalytics"
-  s.version     = "1.2.1"
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'gitalytics/version'
 
-  s.executables << "gitalytics"
+Gem::Specification.new do |spec|
+  spec.name        = "gitalytics"
+  spec.version     = Gitalytics::VERSION
 
-  s.date        = "2014-01-18"
-  s.summary     = "Git Analytics"
-  s.description = "Get usefull analytics from your git log"
-  s.authors     = ["Gonzalo Robaina"]
-  s.email       = "gonzalor@gmail.com"
+  spec.authors     = ["Gonzalo Robaina"]
+  spec.email       = "gonzalor@gmail.com"
 
-  s.files       = []
-  s.files       << "lib/gitalytics.rb"
-  s.files       << "lib/gitlog.rb"
-  s.files       << "lib/user.rb"
-  s.files       << "lib/commit.rb"
-  s.files       << "assets/gitalytics.html.erb"
+  spec.summary     = "Git Analytics"
+  spec.description = "Get usefull analytics from your git log"
+  spec.homepage    = "http://gonza.uy/gitalytics"
+  spec.license     = "MIT"
 
-  s.homepage    = "http://rubygems.org/gems/gitalytics"
-  s.license     = "MIT"
+  spec.files         = `git ls-files -z`.split("\x0")
+  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.require_paths = ["lib"]
+
+  spec.required_ruby_version = '>= 1.9.3'
+
+  spec.add_development_dependency "bundler", "~> 1.7"
+  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_dependency "color-generator"
 end

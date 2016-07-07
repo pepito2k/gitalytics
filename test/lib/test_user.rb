@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper.rb')
 require 'minitest/autorun'
-require 'user'
-require 'commit'
+require 'gitalytics/user'
+require 'gitalytics/commit'
 require 'date'
 
 class TestUser < MiniTest::Unit::TestCase
@@ -83,5 +83,4 @@ class TestUser < MiniTest::Unit::TestCase
 
     assert_equal(7, @user.total_deletions)
   end
-
 end

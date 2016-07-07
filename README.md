@@ -35,9 +35,16 @@ If you'd like to get a fancy html report like the one in the screenshot above, y
 
     $ gitalytics -h
 
+If you want to have the html report but don't want it to be opened right away just write:
+
+    $ gitalytics -n
+
+Note that gitalytics groups authors by name, you can change that and group by email using:
+
+    $ gitalytics -e
 
 ## License
-Copyright (c) 2013 Gonzalo Robaina
+Copyright (c) 2016 Gonzalo Robaina
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
