@@ -16,6 +16,7 @@ GEM
       thor
     docile (1.1.2)
     mime-types (2.0)
+    minitest (5.9.0)
     multi_json (1.8.4)
     rake (10.1.0)
     rest-client (1.6.7)
@@ -37,4 +38,5 @@ DEPENDENCIES
   bundler (~> 1.7)
   coveralls
   gitalytics!
+  minitest
   rake
