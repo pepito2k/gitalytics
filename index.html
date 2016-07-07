@@ -1,66 +1,49 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="UTF-8">
     <title>Gitalytics by pepito2k</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/pepito2k/gitalytics">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/pepito2k/gitalytics/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/pepito2k/gitalytics/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
+    <section class="page-header">
+      <h1 class="project-name">Gitalytics</h1>
+      <h2 class="project-tagline">Git analytics ruby gem</h2>
+      <a href="https://github.com/pepito2k/gitalytics" class="btn">View on GitHub</a>
+      <a href="https://github.com/pepito2k/gitalytics/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/pepito2k/gitalytics/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <div class="wrapper">
-
-      <section>
-        <div id="title">
-          <h1>Gitalytics</h1>
-          <p>Git analytics ruby gem</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/pepito2k">pepito2k</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
-
-        <h2>
-<a name="gitalytics" class="anchor" href="#gitalytics"><span class="octicon octicon-link"></span></a>Gitalytics</h2>
+    <section class="main-content">
+      <h2>
+<a id="gitalytics" class="anchor" href="#gitalytics" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Gitalytics</h2>
 
 <p>Get commits statistics for your git repository
 Based on gist by Tobin Harris: <a href="https://gist.github.com/tobinharris/396634">https://gist.github.com/tobinharris/396634</a></p>
 
 <p><a href="https://codeclimate.com/github/pepito2k/gitalytics"><img src="https://codeclimate.com/github/pepito2k/gitalytics.png" alt="Code Climate"></a>
 <a href="http://badge.fury.io/rb/gitalytics"><img src="https://badge.fury.io/rb/gitalytics.png" alt="Gem Version"></a>
-<a href="https://gemnasium.com/pepito2k/gitalytics"><img src="https://gemnasium.com/pepito2k/gitalytics.png" alt="Dependency Status"></a></p>
+<a href="https://gemnasium.com/pepito2k/gitalytics"><img src="https://gemnasium.com/pepito2k/gitalytics.png" alt="Dependency Status"></a>
+<a href="https://travis-ci.org/pepito2k/gitalytics"><img src="https://travis-ci.org/pepito2k/gitalytics.png" alt="Build Status"></a>
+<a href="https://coveralls.io/r/pepito2k/gitalytics?branch=master"><img src="https://coveralls.io/repos/pepito2k/gitalytics/badge.png?branch=master" alt="Coverage Status"></a></p>
 
-<p><img src="http://photos.gonzalo.robaina.me/gitalytics_screen.png" alt="Gitalytics Screenshot" title="Gitalytics Screenshot"></p>
+<p><img src="http://photos.gonzalo.robaina.me.s3.amazonaws.com/gitalytics_screen.png" alt="Gitalytics Screenshot" title="Gitalytics Screenshot"></p>
 
 <h2>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
 <h3>
-<a name="manual-installation" class="anchor" href="#manual-installation"><span class="octicon octicon-link"></span></a>Manual installation</h3>
+<a id="manual-installation" class="anchor" href="#manual-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Manual installation</h3>
 
 <pre><code>gem install gitalytics
 </code></pre>
 
 <h3>
-<a name="using-bundler" class="anchor" href="#using-bundler"><span class="octicon octicon-link"></span></a>Using bundler</h3>
+<a id="using-bundler" class="anchor" href="#using-bundler" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using bundler</h3>
 
 <p>Add gitalytics to your Gemfile</p>
 
@@ -73,7 +56,7 @@ Based on gist by Tobin Harris: <a href="https://gist.github.com/tobinharris/3966
 </code></pre>
 
 <h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
 <p>Open a terminal window pointing to your git repository and just run the gitalytics command:</p>
 
@@ -85,10 +68,20 @@ Based on gist by Tobin Harris: <a href="https://gist.github.com/tobinharris/3966
 <pre><code>$ gitalytics -h
 </code></pre>
 
-<h2>
-<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+<p>If you want to have the html report but don't want it to be opened right away just write:</p>
 
-<p>Copyright (c) 2013 Gonzalo Robaina</p>
+<pre><code>$ gitalytics -n
+</code></pre>
+
+<p>Note that gitalytics groups authors by name, you can change that and group by email using:</p>
+
+<pre><code>$ gitalytics -e
+</code></pre>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright (c) 2016 Gonzalo Robaina</p>
 
 <p>Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -107,11 +100,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.</p>
-      </section>
 
-    </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-              <script type="text/javascript">
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/pepito2k/gitalytics">Gitalytics</a> is maintained by <a href="https://github.com/pepito2k">pepito2k</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
