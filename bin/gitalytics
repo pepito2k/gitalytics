@@ -4,10 +4,12 @@
 Encoding.default_external = Encoding::UTF_8
 $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__) + "/../lib"))
 
+require 'benchmark'
 require 'optparse'
 require 'gitalytics'
 
 options = {
+  benchmark: false,
   browser: false,
   format: 'cli',
   group_by: 'name'
@@ -34,7 +36,15 @@ OptionParser.new do |opts|
   opts.on("-e", "--group-email", "Group commits by author's email address") do |v|
     options[:group_by] = 'email'
   end
+
+  opts.on("-b", "--benchmark", "Benchmark gitalytics") do |v|
+    options[:benchmark] = true
+  end
 end.parse!
 
 Dir.chdir($1 || '.')
-Gitalytics.analyze(options)
+if options[:benchmark]
+  puts Benchmark.measure { Gitalytics.analyze(options) }
+else
+  Gitalytics.analyze(options)
+end

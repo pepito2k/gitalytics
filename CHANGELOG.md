@@ -1,5 +1,8 @@
 ## Gitalytics Changelog
 
+#### v.1.3.1
+* Add Benchmark option.
+
 #### v.1.3.0
 * Changed CLI output text.
 * Re-structure of gem's source code.
