@@ -3,13 +3,21 @@
 Get commits statistics for your git repository
 Based on gist by Tobin Harris: https://gist.github.com/tobinharris/396634
 
-[![Code Climate](https://codeclimate.com/github/pepito2k/gitalytics.png)](https://codeclimate.com/github/pepito2k/gitalytics)
 [![Gem Version](https://badge.fury.io/rb/gitalytics.png)](http://badge.fury.io/rb/gitalytics)
 [![Dependency Status](https://gemnasium.com/pepito2k/gitalytics.png)](https://gemnasium.com/pepito2k/gitalytics)
 [![Build Status](https://travis-ci.org/pepito2k/gitalytics.png)](https://travis-ci.org/pepito2k/gitalytics)
-[![Coverage Status](https://coveralls.io/repos/pepito2k/gitalytics/badge.png?branch=master)](https://coveralls.io/r/pepito2k/gitalytics?branch=master)
 
-![Gitalytics Screenshot](http://photos.gonzalo.robaina.me/gitalytics_screen.png "Gitalytics Screenshot")
+[![Coverage Status](https://coveralls.io/repos/pepito2k/gitalytics/badge.png?branch=master)](https://coveralls.io/r/pepito2k/gitalytics?branch=master)
+[![Code Climate](https://codeclimate.com/github/pepito2k/gitalytics.png)](https://codeclimate.com/github/pepito2k/gitalytics)
+[![codebeat badge](https://codebeat.co/badges/166f8f5d-5596-44ef-a762-4b89fc5b531f)](https://codebeat.co/projects/github-com-pepito2k-gitalytics)
+
+[![GitHub forks](https://img.shields.io/github/forks/pepito2k/gitalytics.svg)](https://github.com/pepito2k/gitalytics/network)
+[![GitHub stars](https://img.shields.io/github/stars/pepito2k/gitalytics.svg)](https://github.com/pepito2k/gitalytics/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/pepito2k/gitalytics.svg)](https://github.com/pepito2k/gitalytics/issues)
+
+![Total Downloads](http://ruby-gem-downloads-badge.herokuapp.com/gitalytics?type=total)
+
+![Gitalytics Screenshot](http://photos.gonzalo.robaina.me.s3.amazonaws.com/gitalytics_screen.png "Gitalytics Screenshot")
 
 ## Installation
 
@@ -35,9 +43,16 @@ If you'd like to get a fancy html report like the one in the screenshot above, y
 
     $ gitalytics -h
 
+If you want to have the html report but don't want it to be opened right away just write:
+
+    $ gitalytics -n
+
+Note that gitalytics groups authors by name, you can change that and group by email using:
+
+    $ gitalytics -e
 
 ## License
-Copyright (c) 2013 Gonzalo Robaina
+Copyright (c) 2016 Gonzalo Robaina
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

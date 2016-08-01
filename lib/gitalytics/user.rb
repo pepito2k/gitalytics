@@ -1,3 +1,4 @@
+require 'color-generator'
 require 'digest/md5'
 require 'CGI'
 
@@ -9,7 +10,7 @@ class User
     self.name    = name
     self.email   = email
     self.commits = []
-    self.colors  = [rand(255), rand(255), rand(255)].join(', ')
+    self.colors = ColorGenerator.new(saturation: 0.3, lightness: 0.75).create_rgb.join(', ')
   end
 
   def escaped_name
@@ -44,8 +45,12 @@ class User
     commits.map(&:deletions).inject(0) { |total, current| total + current }
   end
 
+  def total_changes
+    total_insertions + total_deletions
+  end
+
   def summary
-    "#{name} has made #{commits.count} commits between #{commits_period} days. He/she did something useful on #{working_days} of those days."
+    "#{name} has made #{commits.count} commits on #{working_days} separate days during a span of #{commits_period} days."
   end
 
   def rgba(opacity = 1)
@@ -57,5 +62,4 @@ class User
     commits.each { |c| days[c.date.wday] += 1 }
     days
   end
-
 end

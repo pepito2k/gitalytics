@@ -1,16 +1,18 @@
 # encoding: UTF-8
 
 require 'erb'
-require 'gitlog'
-require 'user'
-require 'commit'
+require 'matrix'
+require 'gitalytics/commit'
+require 'gitalytics/gitlog'
+require 'gitalytics/user'
+require 'gitalytics/version'
 
-class Gitalytics
+module Gitalytics
 
-  VERSION = '1.2.2'
+  module_function
 
   def analyze(options)
-    data = GitLog.parse_git_log
+    data = GitLog.parse_git_log(options[:group_by])
 
     case options[:format]
     when 'html'
@@ -21,6 +23,8 @@ class Gitalytics
   end
 
   private
+
+  module_function
 
   def output_cli_report(users)
     users.each do |user|
@@ -37,6 +41,9 @@ class Gitalytics
         y.commits.length <=> x.commits.length
       end
       @commits = data[:commits]
+      weekday_commits = @users.map(&:weekday_commits)
+      @weekday_commits = weekday_commits.map { |a| Vector[*a] }.inject(:+).to_a
+
       file.write(erb.result(binding))
     end
     open_report_in_browser(output_file) if open_in_browser
@@ -52,5 +59,4 @@ class Gitalytics
       system "xdg-open #{filename}"
     end
   end
-
 end

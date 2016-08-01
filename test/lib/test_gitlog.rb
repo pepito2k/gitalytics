@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper.rb')
 require 'minitest/autorun'
-require 'gitlog'
+require 'gitalytics/gitlog'
 
 class TestCommit < MiniTest::Unit::TestCase
 
@@ -61,7 +61,7 @@ d392710a9e657c72e73ca87df3ed2c8c802441e4 2012-12-19 06:04:59 -0800 Gonzalo Robai
     hash, block = blocks.last
 
     users = []
-    commit = GitLog.parse_block(hash, block, users)
+    commit = GitLog.parse_block(hash, block, users, 'email')
 
     assert_equal(
       ['README.md', 'bin/gitalytics', 'gitalytics.gemspec', 'lib/gist.rb', 'lib/gitalytics.rb'],
@@ -72,12 +72,11 @@ d392710a9e657c72e73ca87df3ed2c8c802441e4 2012-12-19 06:04:59 -0800 Gonzalo Robai
     assert_equal('Gonzalo Robaina', commit.author.name)
     assert_equal('gonzalor@gmail.com', commit.author.email)
     assert_equal('initial commit', commit.subject)
-
   end
 
   def test_get_user_creates_the_user
     users = []
-    user = GitLog.get_user('name', 'email@example.com', users)
+    user = GitLog.get_user('name', 'email@example.com', users, 'name')
 
     assert_equal(1, users.count)
     assert_equal(user, users.last)
@@ -88,7 +87,7 @@ d392710a9e657c72e73ca87df3ed2c8c802441e4 2012-12-19 06:04:59 -0800 Gonzalo Robai
   def test_get_user_returns_the_user
     users = [User.new('name', 'email@example.com')]
 
-    user = GitLog.get_user('name', 'email@example.com', users)
+    user = GitLog.get_user('name', 'email@example.com', users, 'email')
     assert_equal(user, users.last)
     assert_equal('name', user.name)
     assert_equal('email@example.com', user.email)
@@ -99,10 +98,8 @@ d392710a9e657c72e73ca87df3ed2c8c802441e4 2012-12-19 06:04:59 -0800 Gonzalo Robai
     commit = Commit.new(hash)
     users = []
 
-    GitLog.get_commit_author(data, commit, users)
+    GitLog.get_commit_author(data, commit, users, 'name')
     assert_equal(users.last, commit.author)
     assert_equal(users.last.commits.last, commit)
   end
-
 end
-

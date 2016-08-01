@@ -4,13 +4,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Gitalytics Report">
+    <meta name="author" content="Gonzalo Robaina">
 
     <title>Gitalytics report</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="http://netdna.bootstrapcdn.com/bootswatch/3.0.3/cerulean/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -40,10 +41,115 @@
 
       /* Set the fixed height of the footer here */
       #footer {
-        height: 60px;
         background-color: #f5f5f5;
+        height: 60px;
+        margin-top: 60px;
       }
 
+      /* Twitter Profile styles
+      -------------------------------------------------- */
+      .twPc-div {
+          background: #fff none repeat scroll 0 0;
+          border: 1px solid #e1e8ed;
+          border-radius: 6px;
+          height: 150px;
+          max-width: 340px;
+          margin-bottom: 40px;
+      }
+      .twPc-bg {
+          border-bottom: 1px solid #e1e8ed;
+          border-radius: 4px 4px 0 0;
+          height: 40px;
+          width: 100%;
+      }
+      .twPc-block {
+          display: block !important;
+      }
+      .twPc-button {
+          margin: -35px -10px 0;
+          text-align: right;
+          width: 100%;
+      }
+      .twPc-avatarLink {
+          background-color: #fff;
+          border-radius: 6px;
+          display: inline-block !important;
+          float: left;
+          margin: -30px 5px 0 8px;
+          max-width: 100%;
+          padding: 1px;
+          vertical-align: bottom;
+      }
+      .twPc-avatarImg {
+          border: 2px solid #fff;
+          border-radius: 7px;
+          box-sizing: border-box;
+          color: #fff;
+          height: 72px;
+          width: 72px;
+      }
+      .twPc-divUser {
+          margin: 5px 0 0;
+      }
+      .twPc-divName {
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 21px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis
+      }
+      .twPc-divName a {
+          color: inherit !important;
+      }
+      .twPc-divStats {
+          margin-left: 11px;
+          padding: 10px 0;
+      }
+      .twPc-Arrange {
+          box-sizing: border-box;
+          display: table;
+          margin: 0;
+          min-width: 100%;
+          padding: 0;
+          table-layout: auto;
+      }
+      ul.twPc-Arrange {
+          list-style: outside none none;
+          margin: 0;
+          padding: 0;
+      }
+      .twPc-ArrangeSizeFit {
+          display: table-cell;
+          padding: 0;
+          vertical-align: top;
+      }
+      .twPc-ArrangeSizeFit a:hover {
+          text-decoration: none;
+      }
+      .twPc-StatValue {
+          display: block;
+          font-size: 18px;
+          font-weight: 500;
+          transition: color 0.15s ease-in-out 0s;
+      }
+      .twPc-StatValue.commits {
+        color: #a650c0;
+      }
+      .twPc-StatValue.insertions {
+        color: #539734;
+      }
+      .twPc-StatValue.deletions {
+        color: #c03c24;
+      }
+      .twPc-StatLabel {
+          color: #8899a6;
+          font-size: 10px;
+          letter-spacing: 0.02em;
+          overflow: hidden;
+          text-transform: uppercase;
+          transition: color 0.15s ease-in-out 0s;
+      }
 
       /* Custom page CSS
       -------------------------------------------------- */
@@ -96,6 +202,14 @@
         font-size: 48px;
       }
 
+      #authors li {
+        list-style: none;
+      }
+
+      .usersColorLegend {
+        vertical-align: middle;
+      }
+
     </style>
   </head>
 
@@ -120,6 +234,8 @@
             <ul class="nav navbar-nav">
               <li class="active"><a href="#dashboard" data-toggle="tab">Dashboard</a></li>
               <li><a href="#authors" data-toggle="tab">Authors</a></li>
+              <li><a href="#commits" data-toggle="tab">Commits</a></li>
+              <li><a href="#dates" data-toggle="tab">Dates</a></li>
               <!-- <li><a href="#contact">Contact</a></li> -->
             </ul>
           </div><!--/.nav-collapse -->
@@ -129,6 +245,7 @@
       <!-- Begin page content -->
       <div class="container">
         <div class="tab-content">
+          <!-- Start Dashboard -->
           <div class="tab-pane active" id="dashboard">
             <div class="page-header">
               <h1>Dashboard</h1>
@@ -183,30 +300,136 @@
               </div>
             </div>
           </div>
+          <!-- End Dashboard -->
+          <!-- Start Authors -->
           <div class="tab-pane" id="authors">
             <div class="page-header">
               <h1>Authors</h1>
               <p class="lead">Compare the quantity of commits made by each of your repository contributors.<br/> Check who is writing most of the code of your project and maybe give him/her a prize! ;)</p>
+            </div>
+            <div class="row">
+              <p>So far, <%= @users.size %> contributors commited something to your project.</p>
               <% @users.each do |user| %>
-                <a href="#" title="<%= user.name %> <small><%= user.email %></small>" class="user-avatar" data-content="<%= user.summary %>">
-                  <img class="dp img-circle" src="<%= "http://www.gravatar.com/avatar/#{user.gravatar}?d=mm" %>" style="width: 100px; height:100px; border-color:<%= user.rgba %>"></a>
+                <div class="col-md-4">
+                <!-- Twitter Profile start -->
+                <div class="twPc-div">
+                  <a class="twPc-bg twPc-block" style="background-color: <%= user.rgba %>"></a>
+                <div>
+
+                  <a title="<%= user.name %>" href="#" class="twPc-avatarLink">
+                    <img alt="<%= user.name %>" src="<%= "http://www.gravatar.com/avatar/#{user.gravatar}?d=mm" %>" class="twPc-avatarImg">
+                  </a>
+
+                  <div class="twPc-divUser">
+                    <div class="twPc-divName">
+                      <a href="#"><%= user.name %></a>
+                    </div>
+                    <span>
+                      <a href="mailto:<%= user.email %>"><span><%= user.email %></span></a>
+                    </span>
+                  </div>
+
+                  <div class="twPc-divStats">
+                    <ul class="twPc-Arrange">
+                      <li class="twPc-ArrangeSizeFit">
+                        <span class="twPc-StatLabel twPc-block">Commits</span>
+                        <span class="twPc-StatValue commits"><%= user.commits.size %></span>
+                      </li>
+                      <li class="twPc-ArrangeSizeFit">
+                        <span class="twPc-StatLabel twPc-block">Inserts</span>
+                        <span class="twPc-StatValue insertions"><%= user.total_insertions %></span>
+                      </li>
+                      <li class="twPc-ArrangeSizeFit">
+                        <span class="twPc-StatLabel twPc-block">Deletes</span>
+                        <span class="twPc-StatValue deletions"><%= user.total_deletions %></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                </div>
+                <!-- Twitter Profile end -->
+                </div>
               <% end %>
             </div>
 
             <div class="row">
+              <h2>Commits count per user</h2>
               <div class="col-md-6">
-                <h2>Commits count per user</h2>
                 <canvas id="usersPieChart" width="550" height="400"></canvas>
               </div>
               <div class="col-md-6">
-                <h2>Commits per weekday per user</h2>
-                <canvas id="usersRadarChart" width="550" height="400"></canvas>
+                <ul>
+                  <% @users.each do |u| %>
+                    <li>
+                      <canvas class="usersColorLegend" width="30" height="15" style="background-color: <%= u.rgba %>"></canvas>
+                      <%= u.name %>
+                    </li>
+                  <% end %>
+                <ul>
               </div>
             </div>
-            <hr>
+            <!-- <hr>
             <h2>Insertions vs. Deletions</h2>
-            <canvas id="usersBarChart" width="1100" height="400"></canvas>
+            <canvas id="usersBarChart" width="1100" height="400"></canvas> -->
           </div>
+          <!-- End Authors -->
+          <!-- Start Commits -->
+          <div class="tab-pane" id="commits">
+            <div class="page-header">
+              <h1>Commits</h1>
+              <p class="lead">A few basic stats on single commits.</p>
+            </div>
+
+            <% shortest_commit = @commits.min_by { |c| c.subject.length } %>
+            <% longest_commit = @commits.max_by { |c| c.subject.length } %>
+
+            <h2>Shortest commit message</h2>
+            <blockquote>
+              <p><%=shortest_commit.subject %></p>
+              <footer><%=shortest_commit.author.name %> <cite><%=shortest_commit.date.strftime('%a %-d, %B %Y') %></cite></footer>
+            </blockquote>
+
+            <hr/>
+
+            <h2>Longest commit message</h2>
+            <blockquote>
+              <p><%=longest_commit.subject %></p>
+              <footer><%=longest_commit.author.name %> <cite><%=longest_commit.date.strftime('%a %-d, %B %Y') %></cite></footer>
+            </blockquote>
+
+          </div>
+          <!-- End Commits -->
+          <!-- Start Dates -->
+          <div class="tab-pane" id="dates">
+            <div class="page-header">
+              <h1>Dates</h1>
+              <p class="lead">When are those commits happening?</p>
+            </div>
+
+            <% first_commit = @commits.min_by(&:date) %>
+            <% last_commit = @commits.max_by(&:date) %>
+
+            <h2>First Commit Ever</h2>
+            <blockquote>
+              <p><%=first_commit.subject %></p>
+              <footer><%=first_commit.author.name %> <cite><%=first_commit.date.strftime('%a %-d, %B %Y') %></cite></footer>
+            </blockquote>
+
+            <hr/>
+
+            <h2>Last Commit</h2>
+            <blockquote>
+              <p><%=last_commit.subject %></p>
+              <footer><%=last_commit.author.name %> <cite><%=last_commit.date.strftime('%a %-d, %B %Y') %></cite></footer>
+            </blockquote>
+
+            <hr/>
+
+            <h2>Most Busy Days</h2>
+            <canvas id="daysBarChart" width="1100" height="400"></canvas>
+
+          </div>
+          <!-- End Dates -->
         </div>
       </div>
     </div>
@@ -218,63 +441,79 @@
     </div>
 
 
-    <!-- Bootstrap core JavaScript
+    <!-- External JavaScript Files
     ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.min.js"></script>
     <script>
       $('.user-avatar').popover({ trigger: 'hover', html: true }).click(function(e){
         e.preventDefault();
       });
 
       // Data for Users Pie Chart
-      var data = [<%= @users.map{|d| "{ value: #{d.commits.count}, color: '#{d.rgba}' }" }.join(',') %>];
-      var ctx = document.getElementById("usersPieChart").getContext("2d");
-      var usersPieChart = new Chart(ctx).Pie(data);
-
-      // Data for Insertions vs. Deletions Bar Chart
       var data = {
-        labels: [<%= @users.map{|d| "'#{d.escaped_name}'" }.join(',') %>],
-        datasets: [
-          {
-            data: [<%= @users.map{|d| "#{d.total_insertions}" }.join(',') %>],
-            fillColor: 'rgba(196, 234, 44, 0.5)',
-            strokeColor: 'rgba(196, 234, 44, 1)'
-          },
-          {
-            data: [<%= @users.map{|d| "#{d.total_deletions}" }.join(',') %>],
-            fillColor: 'rgba(234, 80, 44, 0.5)',
-            strokeColor: 'rgba(234, 80, 44, 1)'
-          }
-        ]
+          datasets: [{
+              data: [<%= @users.map{|u| "#{u.commits.count}" }.join(', ') %>],
+              backgroundColor: [<%= @users.map{|u| "'#{u.rgba}'" }.join(', ') %>]
+          }],
+          labels: [<%= @users.map{|u| "'#{u.name}'" }.join(', ') %>
+          ]
       };
-      var ctx = document.getElementById("usersBarChart").getContext("2d");
-      var usersBarChart = new Chart(ctx).Bar(data);
+      var ctx = document.getElementById("usersPieChart").getContext("2d");
+      var usersPieChart = new Chart(ctx,{
+          type: 'pie',
+          data: data,
+          options: {
+            legend: {
+              display: false
+            }
+          }
+      });
+
+      // // Data for Insertions vs. Deletions Bar Chart
+      // var data = {
+      //   labels: [<%= @users.map{|d| "'#{d.name}'" }.join(',') %>],
+      //   datasets: [
+      //     {
+      //       data: [<%= @users.map{|d| "#{d.total_insertions}" }.join(',') %>],
+      //       fillColor: 'rgba(196, 234, 44, 0.5)',
+      //       strokeColor: 'rgba(196, 234, 44, 1)'
+      //     },
+      //     {
+      //       data: [<%= @users.map{|d| "#{d.total_deletions}" }.join(',') %>],
+      //       fillColor: 'rgba(234, 80, 44, 0.5)',
+      //       strokeColor: 'rgba(234, 80, 44, 1)'
+      //     }
+      //   ]
+      // };
+      // var ctx = document.getElementById("usersBarChart").getContext("2d");
+      // var usersBarChart = new Chart(ctx).Bar(data);
 
       // Data for Weekday commits per user
       var data = {
         labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
         datasets: [
-          <% @users.each_with_index do |user, i| %>
           {
-            fillColor : "<%= user.rgba('0.5') %>",
-            strokeColor : "<%= user.rgba %>",
-            pointColor : "<%= user.rgba %>",
-            pointStrokeColor : "#fff",
-            data : [<%= user.weekday_commits.join(', ') %>]
-          }<%= ',' unless i + 1 == @users.count %>
-          <% end %>
+            data : [<%= @weekday_commits.join(', ') %>]
+          }
         ]
       };
-      var ctx = document.getElementById("usersRadarChart").getContext("2d");
-      var usersRadarChart = new Chart(ctx).Radar(data);
+      var ctx = document.getElementById("daysBarChart").getContext("2d");
+      var myBarChart = new Chart(ctx, {
+          type: 'bar',
+          data: data,
+          options: {
+            legend: {
+              display: false
+            }
+          }
+      });
 
       // Makes dashboard items link to tabs
       $('a[data-open-tab]').click(function(e) {
         e.preventDefault();
-        $('a[href="#' + $(this).attr('data-open-tab') + '"]').click();
+        $('.navbar-nav').find('a[href="#' + $(this).attr('data-open-tab') + '"]').click();
       });
     </script>
   </body>

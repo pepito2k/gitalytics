@@ -1,19 +1,19 @@
-require 'commit'
-require 'user'
+require 'gitalytics/commit'
+require 'gitalytics/user'
 require 'date'
 
 module GitLog
 
   module_function
 
-  def parse_git_log
+  def parse_git_log(group_by)
     users, commits = [], []
 
     log = get_log
     blocks = get_blocks(log)
 
     blocks.each do |(hash, block_string)|
-      commits << parse_block(hash, block_string, users)
+      commits << parse_block(hash, block_string, users, group_by)
     end
 
     { users: users, commits: commits }
@@ -31,7 +31,7 @@ module GitLog
     commits.zip(blocks)
   end
 
-  def parse_block(hash, block_string, users)
+  def parse_block(hash, block_string, users, group_by)
     commit = Commit.new(hash)
 
     block_string.encode!('UTF-8', 'UTF8-MAC') if defined?(Encoding::UTF8_MAC)
@@ -41,7 +41,7 @@ module GitLog
     commit.subject = data[:subject]
     commit.date = Date.parse(data[:date])
 
-    get_commit_author(data, commit, users)
+    get_commit_author(data, commit, users, group_by)
     get_commit_summary(block_string, commit)
 
     commit
@@ -57,16 +57,22 @@ module GitLog
     end
   end
 
-  def get_commit_author(data, commit, users)
-    user = get_user(data[:name], data[:email], users)
+  def get_commit_author(data, commit, users, group_by)
+    user = get_user(data[:name], data[:email], users, group_by)
 
     commit.author = user
     user.commits << commit
   end
 
-  def get_user(name, email, users)
-    users.each do |user|
-      return user if user.email == email
+  def get_user(name, email, users, group_by)
+    if group_by == 'name'
+      users.each do |user|
+        return user if user.name == name
+      end
+    elsif group_by == 'email'
+      users.each do |user|
+        return user if user.email == email
+      end
     end
     users << new_user = User.new(name, email)
     new_user
