@@ -471,25 +471,6 @@
           }
       });
 
-      // // Data for Insertions vs. Deletions Bar Chart
-      // var data = {
-      //   labels: [<%= @users.map{|d| "'#{d.name}'" }.join(',') %>],
-      //   datasets: [
-      //     {
-      //       data: [<%= @users.map{|d| "#{d.total_insertions}" }.join(',') %>],
-      //       fillColor: 'rgba(196, 234, 44, 0.5)',
-      //       strokeColor: 'rgba(196, 234, 44, 1)'
-      //     },
-      //     {
-      //       data: [<%= @users.map{|d| "#{d.total_deletions}" }.join(',') %>],
-      //       fillColor: 'rgba(234, 80, 44, 0.5)',
-      //       strokeColor: 'rgba(234, 80, 44, 1)'
-      //     }
-      //   ]
-      // };
-      // var ctx = document.getElementById("usersBarChart").getContext("2d");
-      // var usersBarChart = new Chart(ctx).Bar(data);
-
       // Data for Weekday commits per user
       var data = {
         labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],

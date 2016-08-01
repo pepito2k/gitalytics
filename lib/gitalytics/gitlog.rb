@@ -25,7 +25,7 @@ module GitLog
 
   def get_blocks(log_string)
     commits = log_string.scan(/^([a-f0-9]{40})/).map(&:first)
-    blocks = log_string.split(/^[a-f0-9]{40}/).map(&:strip)
+    blocks  = log_string.split(/^[a-f0-9]{40}/).map(&:strip)
     blocks.shift # get rid of first empty string
 
     commits.zip(blocks)
