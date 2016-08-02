@@ -1,0 +1,7 @@
+2012-12-06 10:29:49 -0200 Gonzalo Robaina <gonzalor@gmail.com> initial commit
+
+1       0       README.md
+3       0       bin/gitalytics
+13      0       gitalytics.gemspec
+49      0       lib/gist.rb
+11      0       lib/gitalytics.rb

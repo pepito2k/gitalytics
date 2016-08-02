@@ -1,0 +1,15 @@
+bea63e76c7c6d5afd42ac5b24a911b36e5c261f9 2013-02-13 23:11:16 -0200 Gonzalo Robaina <gonzalor@gmail.com> Print basic commit report on the console
+
+6       1       bin/gitalytics
+33      6       lib/gitalytics.rb
+d392710a9e657c72e73ca87df3ed2c8c802441e4 2012-12-19 06:04:59 -0800 Gonzalo Robaina <gonzalor@gmail.com> Initial commit
+
+16      0       .gitignore
+4       0       README.md
+9a99ae5dbc1eaadf268ca925cce9b68d10216151 2012-12-06 10:29:49 -0200 Gonzalo Robaina <gonzalor@gmail.com> initial commit
+
+1       0       README.md
+3       0       bin/gitalytics
+13      0       gitalytics.gemspec
+49      0       lib/gist.rb
+11      0       lib/gitalytics.rb

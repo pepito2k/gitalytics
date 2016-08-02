@@ -8,9 +8,9 @@ class User
     self.name    = name
     self.email   = email
     self.commits = []
-    self.colors = ColorGenerator.new(saturation: 0.3, lightness: 0.75)
-                                .create_rgb
-                                .join(', ')
+    self.colors  = ColorGenerator.new(saturation: 0.3, lightness: 0.75)
+                                 .create_rgb
+                                 .join(', ')
   end
 
   def gravatar

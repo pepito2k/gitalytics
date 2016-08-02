@@ -1,0 +1,4 @@
+2013-02-13 23:11:16 -0200 Gonzalo Robaina <gonzalor@gmail.com> Print basic commit report on the console
+
+6       1       bin/gitalytics
+33      6       lib/gitalytics.rb

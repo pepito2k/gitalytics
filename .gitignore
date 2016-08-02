@@ -13,3 +13,4 @@
 *.a
 mkmf.log
 gitalytics_result.html
+.byebug_history
