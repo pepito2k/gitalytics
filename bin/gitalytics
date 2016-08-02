@@ -42,7 +42,6 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-# Dir.chdir($1 || '.')
 if options[:benchmark]
   puts Benchmark.measure { Gitalytics.analyze(options) }
 else

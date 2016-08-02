@@ -8,16 +8,8 @@ class TestCommit < MiniTest::Unit::TestCase
   end
 
   def build_commit(commit)
-    commit.summary << {
-      insertions: 3,
-      deletions: 2,
-      filename: 'a.rb'
-    }
-    commit.summary << {
-      insertions: 4,
-      deletions: 3,
-      filename: 'b.rb'
-    }
+    commit.summary << { insertions: 3, deletions: 2, filename: 'a.rb' }
+    commit.summary << { insertions: 4, deletions: 3, filename: 'b.rb' }
   end
 
   def test_that_count_insertions

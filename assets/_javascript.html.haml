@@ -7,7 +7,7 @@
   var data = {
       datasets: [{
           data: [#{users.map{|u| "#{u.commits.count}" }.join(', ')}],
-          backgroundColor: [#{users.map{|u| "'\#{u.rgba}'" }.join(', ')}]
+          backgroundColor: [#{users.map{|u| "'#{u.rgba}'" }.join(', ')}]
       }],
       labels: [#{users.map{|u| "'#{u.name}'" }.join(', ')}
       ]

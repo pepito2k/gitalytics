@@ -1,6 +1,5 @@
 require 'color-generator'
 require 'digest/md5'
-require 'cgi'
 
 class User
   attr_accessor :name, :email, :commits, :colors
@@ -12,10 +11,6 @@ class User
     self.colors = ColorGenerator.new(saturation: 0.3, lightness: 0.75)
                                 .create_rgb
                                 .join(', ')
-  end
-
-  def escaped_name
-    CGI.escapeHTML(name)
   end
 
   def gravatar
@@ -51,7 +46,7 @@ class User
   end
 
   def summary
-    "#{escaped_name} has made #{commits.count} commits on #{working_days} "\
+    "#{name} has made #{commits.count} commits on #{working_days} "\
     "separate days during a span of #{commits_period} days."
   end
 

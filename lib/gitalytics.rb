@@ -40,25 +40,28 @@ module Gitalytics
     @weekday_commits = weekday_commits.map { |a| Vector[*a] }.inject(:+).to_a
   end
 
-  def output_html_report(data, open_in_browser)
+  def template_file
     dir           = File.dirname(__FILE__)
     filepath      = File.join(dir, '..', 'assets', 'gitalytics.html.haml')
-    template_file = File.read(filepath)
+    File.read(filepath)
+  end
+
+  def output_html_report(data, open_in_browser)
     File.open(OUTPUT_FILE, 'w+') do |file|
       prepare_data(data)
       file.write(Haml::Engine.new(template_file).render(self))
     end
-    open_report_in_browser(OUTPUT_FILE) if open_in_browser
+    open_report_in_browser if open_in_browser
   end
 
-  def open_report_in_browser(filename)
+  def open_report_in_browser
     case RbConfig::CONFIG['host_os']
     when /mswin|mingw|cygwin/
-      system "start #{filename}"
+      system "start #{OUTPUT_FILE}"
     when /darwin/
-      system "open #{filename}"
+      system "open #{OUTPUT_FILE}"
     when /linux|bsd/
-      system "xdg-open #{filename}"
+      system "xdg-open #{OUTPUT_FILE}"
     end
   end
 end

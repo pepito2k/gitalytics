@@ -9,8 +9,7 @@ module GitLog
     users   = []
     commits = []
 
-    log = get_log
-    blocks = get_blocks(log)
+    blocks = get_blocks(get_log)
 
     blocks.each do |(hash, block_string)|
       commits << parse_block(hash, block_string, users, group_by)
@@ -66,15 +65,13 @@ module GitLog
   end
 
   def get_user(name, email, users, group_by)
-    if group_by == 'name'
-      users.each do |user|
-        return user if user.name == name
-      end
-    elsif group_by == 'email'
-      users.each do |user|
-        return user if user.email == email
-      end
+    case group_by
+    when 'name'
+      u = users.index { |user| user.name == name }
+    when 'email'
+      u = users.index { |user| user.email == email }
     end
+    return users[u] if u
     users << new_user = User.new(name, email)
     new_user
   end
