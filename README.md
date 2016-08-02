@@ -14,6 +14,7 @@ Based on gist by Tobin Harris: https://gist.github.com/tobinharris/396634
 [![GitHub forks](https://img.shields.io/github/forks/pepito2k/gitalytics.svg)](https://github.com/pepito2k/gitalytics/network)
 [![GitHub stars](https://img.shields.io/github/stars/pepito2k/gitalytics.svg)](https://github.com/pepito2k/gitalytics/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/pepito2k/gitalytics.svg)](https://github.com/pepito2k/gitalytics/issues)
+[![Codewake](https://www.codewake.com/badges/ask_question.svg)](https://www.codewake.com/p/gitalytics)
 
 ![Total Downloads](http://ruby-gem-downloads-badge.herokuapp.com/gitalytics?type=total)
 
