@@ -4,6 +4,7 @@
 * Add Benchmark option.
 * Fix lots of Rubocop's warnings.
 * Use haml and partials for html report template.
+* Improved code-smell.
 
 #### v.1.3.0
 * Changed CLI output text.

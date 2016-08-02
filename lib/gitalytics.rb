@@ -8,6 +8,8 @@ require 'gitalytics/user'
 require 'gitalytics/version'
 
 module Gitalytics
+  OUTPUT_FILE = 'gitalytics_result.html'.freeze
+
   module_function
 
   def analyze(options)
@@ -31,32 +33,31 @@ module Gitalytics
     end
   end
 
+  def prepare_data(data)
+    @users = data[:users].sort { |x, y| y.commits.length <=> x.commits.length }
+    @commits = data[:commits]
+    weekday_commits = @users.map(&:weekday_commits)
+    @weekday_commits = weekday_commits.map { |a| Vector[*a] }.inject(:+).to_a
+  end
+
   def output_html_report(data, open_in_browser)
     dir           = File.dirname(__FILE__)
     filepath      = File.join(dir, '..', 'assets', 'gitalytics.html.haml')
     template_file = File.read(filepath)
-    output_file   = 'gitalytics_result.html'
-    File.open(output_file, 'w+') do |file|
-      @users = data[:users].sort do |x, y|
-        y.commits.length <=> x.commits.length
-      end
-      @commits = data[:commits]
-      weekday_commits = @users.map(&:weekday_commits)
-      @weekday_commits = weekday_commits.map { |a| Vector[*a] }.inject(:+).to_a
-
-      html = Haml::Engine.new(template_file).render(self)
-      file.write(html)
+    File.open(OUTPUT_FILE, 'w+') do |file|
+      prepare_data(data)
+      file.write(Haml::Engine.new(template_file).render(self))
     end
-    open_report_in_browser(output_file) if open_in_browser
+    open_report_in_browser(OUTPUT_FILE) if open_in_browser
   end
 
   def open_report_in_browser(filename)
-    host = RbConfig::CONFIG['host_os']
-    if host =~ /mswin|mingw|cygwin/
+    case RbConfig::CONFIG['host_os']
+    when /mswin|mingw|cygwin/
       system "start #{filename}"
-    elsif host =~ /darwin/
+    when /darwin/
       system "open #{filename}"
-    elsif host =~ /linux|bsd/
+    when /linux|bsd/
       system "xdg-open #{filename}"
     end
   end
