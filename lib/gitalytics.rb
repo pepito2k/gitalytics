@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-require 'erb'
+require 'haml'
 require 'matrix'
 require 'gitalytics/commit'
 require 'gitalytics/gitlog'
@@ -32,9 +32,10 @@ module Gitalytics
   end
 
   def output_html_report(data, open_in_browser)
-    template_file = File.read(File.join(File.dirname(__FILE__), '..', 'assets', 'gitalytics.html.erb'))
-    erb = ERB.new(template_file)
-    output_file = 'gitalytics_result.html'
+    dir           = File.dirname(__FILE__)
+    filepath      = File.join(dir, '..', 'assets', 'gitalytics.html.haml')
+    template_file = File.read(filepath)
+    output_file   = 'gitalytics_result.html'
     File.open(output_file, 'w+') do |file|
       @users = data[:users].sort do |x, y|
         y.commits.length <=> x.commits.length
@@ -43,7 +44,8 @@ module Gitalytics
       weekday_commits = @users.map(&:weekday_commits)
       @weekday_commits = weekday_commits.map { |a| Vector[*a] }.inject(:+).to_a
 
-      file.write(erb.result(binding))
+      html = Haml::Engine.new(template_file).render(self)
+      file.write(html)
     end
     open_report_in_browser(output_file) if open_in_browser
   end

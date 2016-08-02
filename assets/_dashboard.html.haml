@@ -1,0 +1,45 @@
+/ Start Dashboard
+#dashboard.tab-pane.active
+  .page-header
+    %h1 Dashboard
+    %p.lead A quick overview of the activity on your git repository.
+  .row
+    .col-md-4
+      .dashboard-box
+        %a{"data-open-tab" => "authors", href: "#authors"}
+          %span.glyphicon.glyphicon-user
+          %br/
+          = users.count
+          authors
+    .col-md-4
+      .dashboard-box
+        %span.glyphicon.glyphicon-list
+        %br/
+        = commits.count
+        commits
+    .col-md-4
+      .dashboard-box
+        %span.glyphicon.glyphicon-file
+        %br/
+        = commits.map{ |c| c.files_committed }.flatten.uniq.compact.count
+        files committed
+  .row
+    .col-md-4
+      .dashboard-box
+        %span.glyphicon.glyphicon-plus
+        %br/
+        = commits.inject(0) { |total, commit| total + commit.insertions }
+        insertions
+    .col-md-4
+      .dashboard-box
+        %span.glyphicon.glyphicon-minus
+        %br/
+        = commits.inject(0) { |total, commit| total + commit.deletions }
+        deletions
+    .col-md-4
+      .dashboard-box
+        %span.glyphicon.glyphicon-calendar
+        %br/
+        = (commits.max_by(&:date).date - commits.min_by(&:date).date).to_i + 1
+        days
+/ End Dashboard

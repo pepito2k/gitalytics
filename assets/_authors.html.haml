@@ -1,0 +1,53 @@
+/ Start Authors
+#authors.tab-pane
+  .page-header
+    %h1 Authors
+    %p.lead
+      Compare the quantity of commits made by each of your repository contributors.
+      %br/
+      Check who is writing most of the code of your project and maybe give him/her a prize! ;)
+  .row
+    %p
+      So far, #{users.size} contributors commited something to your project.
+    - users.each do |user|
+      .col-md-4
+        / Twitter Profile start
+        .twPc-div
+          %a.twPc-bg.twPc-block{style: "background-color: #{user.rgba}"}
+          %div
+            %a.twPc-avatarLink{href: "#", title: "#{user.name}"}
+              %img.twPc-avatarImg{alt: "#{user.name}", src: "http://www.gravatar.com/avatar/#{user.gravatar}?d=mm"}/
+            .twPc-divUser
+              .twPc-divName
+                %a{href: "#"}= user.name
+              %span
+                %a{href: "mailto:#{user.email}"}
+                  %span= user.email
+            .twPc-divStats
+              %ul.twPc-Arrange
+                %li.twPc-ArrangeSizeFit
+                  %span.twPc-StatLabel.twPc-block Commits
+                  %span.twPc-StatValue.commits= user.commits.size
+                %li.twPc-ArrangeSizeFit
+                  %span.twPc-StatLabel.twPc-block Inserts
+                  %span.twPc-StatValue.insertions= user.total_insertions
+                %li.twPc-ArrangeSizeFit
+                  %span.twPc-StatLabel.twPc-block Deletes
+                  %span.twPc-StatValue.deletions= user.total_deletions
+        / Twitter Profile end
+  .row
+    %h2 Commits count per user
+    .col-md-6
+      %canvas#usersPieChart{height: "400", width: "550"}
+    .col-md-6
+      %ul
+        - users.each do |u|
+          %li
+            %canvas.usersColorLegend{height: "15", style: "background-color: #{u.rgba}", width: "30"}
+            = u.name
+        %ul
+  /
+    <hr>
+    <h2>Insertions vs. Deletions</h2>
+    <canvas id="usersBarChart" width="1100" height="400"></canvas>
+/ End Authors

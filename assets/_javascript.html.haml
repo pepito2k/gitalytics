@@ -1,0 +1,44 @@
+:javascript
+  $('.user-avatar').popover({ trigger: 'hover', html: true }).click(function(e){
+    e.preventDefault();
+  });
+
+  // Data for Users Pie Chart
+  var data = {
+      datasets: [{
+          data: [#{users.map{|u| "#{u.commits.count}" }.join(', ')}],
+          backgroundColor: [#{users.map{|u| "'\#{u.rgba}'" }.join(', ')}]
+      }],
+      labels: [#{users.map{|u| "'#{u.name}'" }.join(', ')}
+      ]
+  };
+  var ctx = document.getElementById("usersPieChart").getContext("2d");
+  var usersPieChart = new Chart(ctx,{
+      type: 'pie',
+      data: data,
+      options: {
+        legend: { display: false }
+      }
+  });
+
+  // Data for Weekday commits per user
+  var data = {
+    labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    datasets: [
+      { data : [#{weekday_commits.join(', ')}] }
+    ]
+  };
+  var ctx = document.getElementById("daysBarChart").getContext("2d");
+  var myBarChart = new Chart(ctx, {
+      type: 'bar',
+      data: data,
+      options: {
+        legend: { display: false }
+      }
+  });
+
+  // Makes dashboard items link to tabs
+  $('a[data-open-tab]').click(function(e) {
+    e.preventDefault();
+    $('.navbar-nav').find('a[href="#' + $(this).attr('data-open-tab') + '"]').click();
+  });

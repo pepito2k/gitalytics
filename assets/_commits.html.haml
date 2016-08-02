@@ -1,0 +1,21 @@
+/ Start Commits
+#commits.tab-pane
+  .page-header
+    %h1 Commits
+    %p.lead A few basic stats on single commits.
+  - shortest_commit = commits.min_by { |c| c.subject.length }
+  - longest_commit  = commits.max_by { |c| c.subject.length }
+  %h2 Shortest commit message
+  %blockquote
+    %p= shortest_commit.subject
+    %footer
+      = shortest_commit.author.name
+      %cite= shortest_commit.date.strftime('%a %-d, %B %Y')
+  %hr/
+  %h2 Longest commit message
+  %blockquote
+    %p= longest_commit.subject
+    %footer
+      = longest_commit.author.name
+      %cite= longest_commit.date.strftime('%a %-d, %B %Y')
+/ End Commits

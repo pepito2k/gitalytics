@@ -1,0 +1,24 @@
+/ Start Dates
+#dates.tab-pane
+  .page-header
+    %h1 Dates
+    %p.lead When are those commits happening?
+  - first_commit = commits.min_by(&:date)
+  - last_commit  = commits.max_by(&:date)
+  %h2 First Commit Ever
+  %blockquote
+    %p= first_commit.subject
+    %footer
+      = first_commit.author.name
+      %cite= first_commit.date.strftime('%a %-d, %B %Y')
+  %hr/
+  %h2 Last Commit
+  %blockquote
+    %p= last_commit.subject
+    %footer
+      = last_commit.author.name
+      %cite= last_commit.date.strftime('%a %-d, %B %Y')
+  %hr/
+  %h2 Most Busy Days
+  %canvas#daysBarChart{height: "400", width: "1100"}
+/ End Dates
