@@ -8,7 +8,6 @@ require 'gitalytics/user'
 require 'gitalytics/version'
 
 module Gitalytics
-
   module_function
 
   def analyze(options)
@@ -33,9 +32,9 @@ module Gitalytics
   end
 
   def output_html_report(data, open_in_browser)
-    template_file = File.read(File.join(File.dirname(__FILE__), "..", "assets", "gitalytics.html.erb"))
+    template_file = File.read(File.join(File.dirname(__FILE__), '..', 'assets', 'gitalytics.html.erb'))
     erb = ERB.new(template_file)
-    output_file = "gitalytics_result.html"
+    output_file = 'gitalytics_result.html'
     File.open(output_file, 'w+') do |file|
       @users = data[:users].sort do |x, y|
         y.commits.length <=> x.commits.length

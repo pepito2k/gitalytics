@@ -3,11 +3,11 @@ require 'gitalytics/user'
 require 'date'
 
 module GitLog
-
   module_function
 
   def parse_git_log(group_by)
-    users, commits = [], []
+    users   = []
+    commits = []
 
     log = get_log
     blocks = get_blocks(log)
@@ -48,11 +48,12 @@ module GitLog
   end
 
   def get_commit_summary(block_string, commit)
-    block_string.scan(/^(?<insertions>\d+)\s+(?<deletions>\d+)\s+(?<filename>.*)$/).each do |summary|
+    regex = /^(?<insertions>\d+)\s+(?<deletions>\d+)\s+(?<filename>.*)$/
+    block_string.scan(regex).each do |summary|
       commit.summary << {
         insertions: summary[0].to_i,
         deletions: summary[1].to_i,
-        filename: summary[2],
+        filename: summary[2]
       }
     end
   end
@@ -77,5 +78,4 @@ module GitLog
     users << new_user = User.new(name, email)
     new_user
   end
-
 end

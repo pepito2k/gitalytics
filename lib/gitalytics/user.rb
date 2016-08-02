@@ -3,14 +3,15 @@ require 'digest/md5'
 require 'CGI'
 
 class User
-
   attr_accessor :name, :email, :commits, :colors
 
   def initialize(name, email)
     self.name    = name
     self.email   = email
     self.commits = []
-    self.colors = ColorGenerator.new(saturation: 0.3, lightness: 0.75).create_rgb.join(', ')
+    self.colors = ColorGenerator.new(saturation: 0.3, lightness: 0.75)
+                                .create_rgb
+                                .join(', ')
   end
 
   def escaped_name
@@ -38,11 +39,11 @@ class User
   end
 
   def total_insertions
-    commits.map(&:insertions).inject(0) { |total, current| total + current }
+    commits.map(&:insertions).inject(0) { |a, e| a + e }
   end
 
   def total_deletions
-    commits.map(&:deletions).inject(0) { |total, current| total + current }
+    commits.map(&:deletions).inject(0) { |a, e| a + e }
   end
 
   def total_changes
@@ -50,7 +51,7 @@ class User
   end
 
   def summary
-    "#{name} has made #{commits.count} commits on #{working_days} separate days during a span of #{commits_period} days."
+    "#{escaped_name} has made #{commits.count} commits on #{working_days} separate days during a span of #{commits_period} days."
   end
 
   def rgba(opacity = 1)
@@ -58,7 +59,7 @@ class User
   end
 
   def weekday_commits
-    days = Array.new(7) {0}
+    days = Array.new(7) { 0 }
     commits.each { |c| days[c.date.wday] += 1 }
     days
   end

@@ -3,7 +3,6 @@ require 'minitest/autorun'
 require 'gitalytics/commit'
 
 class TestCommit < MiniTest::Unit::TestCase
-
   def setup
     @commit = Commit.new('abcdef0123456789')
   end
@@ -38,5 +37,4 @@ class TestCommit < MiniTest::Unit::TestCase
 
     assert_equal(['a.rb', 'b.rb'], @commit.files_committed)
   end
-
 end

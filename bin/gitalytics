@@ -16,33 +16,33 @@ options = {
 }
 
 OptionParser.new do |opts|
-  opts.banner = "Usage: gitalytics [options]"
+  opts.banner = 'Usage: gitalytics [options]'
 
-  opts.on("-v", "--version", "Display gem version") do |v|
+  opts.on('-v', '--version', 'Display gem version') do
     p "Gitalytics #{Gitalytics::VERSION}"
     exit
   end
 
-  opts.on("-h", "--html", "Outputs html report and displays it in default web browser") do |v|
+  opts.on('-h', '--html', 'Outputs html report and displays it in default web browser') do
     options[:format] = 'html'
     options[:browser] = true
   end
 
-  opts.on("-n", "--no-browser", "Do not open html report in browser") do |v|
+  opts.on('-n', '--no-browser', 'Do not open html report in browser') do
     options[:format] = 'html'
     options[:browser] = false
   end
 
-  opts.on("-e", "--group-email", "Group commits by author's email address") do |v|
+  opts.on('-e', '--group-email', "Group commits by author's email address") do
     options[:group_by] = 'email'
   end
 
-  opts.on("-b", "--benchmark", "Benchmark gitalytics") do |v|
+  opts.on('-b', '--benchmark', 'Benchmark gitalytics') do
     options[:benchmark] = true
   end
 end.parse!
 
-Dir.chdir($1 || '.')
+# Dir.chdir($1 || '.')
 if options[:benchmark]
   puts Benchmark.measure { Gitalytics.analyze(options) }
 else

@@ -5,7 +5,6 @@ require 'gitalytics/commit'
 require 'date'
 
 class TestUser < MiniTest::Unit::TestCase
-
   def setup
     @user = User.new('John Doe', 'john@doe.com')
   end
@@ -18,22 +17,26 @@ class TestUser < MiniTest::Unit::TestCase
   end
 
   def create_commits(user)
-    user.commits << create_commit('abcdef', '2000-01-10', [{ # weekday: 1
+    user.commits << create_commit('abcdef', '2000-01-10',
+    [{ # weekday: 1
       filename: 'a.rb',
       insertions: 1,
-      deletions: 0,
+      deletions: 0
     }])
-    user.commits << create_commit('abcdef', '2000-01-01', [{ # weekday: 6
+    user.commits << create_commit('abcdef', '2000-01-01',
+    [{ # weekday: 6
       filename: 'c.rb',
       insertions: 0,
-      deletions: 1,
+      deletions: 1
     }])
-    user.commits << create_commit('abcdef', '2000-01-01', [{ # weekday: 6
+    user.commits << create_commit('abcdef', '2000-01-01',
+    [{ # weekday: 6
       filename: 'd.rb',
       insertions: 4,
       deletions: 5
     }])
-    user.commits << create_commit('abcdef', '2000-01-08', [{ # weekday: 6
+    user.commits << create_commit('abcdef', '2000-01-08',
+    [{ # weekday: 6
       filename: 'e.rb',
       insertions: 1,
       deletions: 1

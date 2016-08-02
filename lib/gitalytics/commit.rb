@@ -1,5 +1,4 @@
 class Commit
-
   attr_accessor :hash, :author, :date, :subject, :summary
 
   def initialize(hash)
@@ -8,15 +7,14 @@ class Commit
   end
 
   def insertions
-    summary.inject(0) { |total, current| total + current[:insertions] }
+    summary.inject(0) { |a, e| a + e[:insertions] }
   end
 
   def deletions
-    summary.inject(0) { |total, current| total + current[:deletions] }
+    summary.inject(0) { |a, e| a + e[:deletions] }
   end
 
   def files_committed
-    summary.map{ |s| s[:filename] }
+    summary.map { |s| s[:filename] }
   end
-
 end

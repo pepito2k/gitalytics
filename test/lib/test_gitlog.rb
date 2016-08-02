@@ -3,9 +3,7 @@ require 'minitest/autorun'
 require 'gitalytics/gitlog'
 
 class TestCommit < MiniTest::Unit::TestCase
-
   def git_log
-
     %q(bea63e76c7c6d5afd42ac5b24a911b36e5c261f9 2013-02-13 23:11:16 -0200 Gonzalo Robaina <gonzalor@gmail.com> Print basic commit report on the console
 
 6       1       bin/gitalytics
