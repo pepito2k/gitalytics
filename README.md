@@ -7,7 +7,7 @@ Based on gist by Tobin Harris: https://gist.github.com/tobinharris/396634
 [![Dependency Status](https://gemnasium.com/pepito2k/gitalytics.png)](https://gemnasium.com/pepito2k/gitalytics)
 [![Build Status](https://travis-ci.org/pepito2k/gitalytics.png)](https://travis-ci.org/pepito2k/gitalytics)
 
-[![Coverage Status](https://coveralls.io/repos/pepito2k/gitalytics/badge.png?branch=master)](https://coveralls.io/r/pepito2k/gitalytics?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/pepito2k/gitalytics/badge.svg?branch=master)](https://coveralls.io/github/pepito2k/gitalytics?branch=master)
 [![Code Climate](https://codeclimate.com/github/pepito2k/gitalytics.png)](https://codeclimate.com/github/pepito2k/gitalytics)
 [![codebeat badge](https://codebeat.co/badges/166f8f5d-5596-44ef-a762-4b89fc5b531f)](https://codebeat.co/projects/github-com-pepito2k-gitalytics)
 
