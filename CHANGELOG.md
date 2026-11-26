@@ -1,11 +1,13 @@
 ## Gitalytics Changelog
 
-#### Unreleased
+#### v.1.4.0
 * Brand new HTML report: a single self-contained page (no CDN assets) with inline SVG charts, light and dark themes, and a mobile-friendly layout.
 * New report sections: activity timeline, sortable author leaderboard with trends, weekday/hour punch card, most changed files, top directories and highlights.
 * Commits now keep their full timestamp (`Commit#time`).
 * Dropped the `haml`, `color-generator` and `matrix` dependencies; gitalytics now has no runtime dependencies.
 * Requires Ruby 3.1 or newer.
+* Runs on modern Ruby again (fixes for Bundler, Minitest and stdlib changes).
+* CI moved to GitHub Actions (Ruby 3.1 to 3.4) with RuboCop.
 
 #### v.1.3.1
 * Add Benchmark option.

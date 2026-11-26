@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
-# encoding: UTF-8
+# frozen_string_literal: true
 
 Encoding.default_external = Encoding::UTF_8
-$LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__) + "/../lib"))
+$LOAD_PATH.unshift(File.expand_path("#{File.dirname(__FILE__)}/../lib"))
 
 require 'benchmark'
 require 'optparse'
@@ -43,7 +43,7 @@ OptionParser.new do |opts|
 end.parse!
 
 if options[:benchmark]
-  puts Benchmark.measure { Gitalytics.analyze(options) }
+  puts(Benchmark.measure { Gitalytics.analyze(options) })
 else
   Gitalytics.analyze(options)
 end

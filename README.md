@@ -1,56 +1,65 @@
-## Gitalytics
+# Gitalytics
 
-Get commits statistics for your git repository
-Based on gist by Tobin Harris: https://gist.github.com/tobinharris/396634
+[![Gem Version](https://img.shields.io/gem/v/gitalytics.svg)](https://rubygems.org/gems/gitalytics)
+[![CI](https://github.com/pepito2k/gitalytics/actions/workflows/ci.yml/badge.svg)](https://github.com/pepito2k/gitalytics/actions/workflows/ci.yml)
+[![Downloads](https://img.shields.io/gem/dt/gitalytics.svg)](https://rubygems.org/gems/gitalytics)
 
-[![Gem Version](https://badge.fury.io/rb/gitalytics.png)](http://badge.fury.io/rb/gitalytics)
-[![Dependency Status](https://gemnasium.com/pepito2k/gitalytics.png)](https://gemnasium.com/pepito2k/gitalytics)
-[![Build Status](https://travis-ci.org/pepito2k/gitalytics.png)](https://travis-ci.org/pepito2k/gitalytics)
+Commit statistics for any git repository, in your terminal or as a single self-contained HTML report.
 
-[![Coverage Status](https://coveralls.io/repos/github/pepito2k/gitalytics/badge.svg?branch=master)](https://coveralls.io/github/pepito2k/gitalytics?branch=master)
-[![Code Climate](https://codeclimate.com/github/pepito2k/gitalytics.png)](https://codeclimate.com/github/pepito2k/gitalytics)
-[![codebeat badge](https://codebeat.co/badges/166f8f5d-5596-44ef-a762-4b89fc5b531f)](https://codebeat.co/projects/github-com-pepito2k-gitalytics)
+Originally based on a gist by Tobin Harris: https://gist.github.com/tobinharris/396634
 
-[![GitHub forks](https://img.shields.io/github/forks/pepito2k/gitalytics.svg)](https://github.com/pepito2k/gitalytics/network)
-[![GitHub stars](https://img.shields.io/github/stars/pepito2k/gitalytics.svg)](https://github.com/pepito2k/gitalytics/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/pepito2k/gitalytics.svg)](https://github.com/pepito2k/gitalytics/issues)
-[![Codewake](https://www.codewake.com/badges/ask_question.svg)](https://www.codewake.com/p/gitalytics)
-
-![Total Downloads](http://ruby-gem-downloads-badge.herokuapp.com/gitalytics?type=total)
-
-![Gitalytics Screenshot](http://photos.gonzalo.robaina.me.s3.amazonaws.com/gitalytics_screen.png "Gitalytics Screenshot")
+![Gitalytics HTML report](docs/report.png)
 
 ## Installation
 
-### Manual installation
+Gitalytics needs Ruby 3.1 or newer and has no other runtime dependencies.
 
     gem install gitalytics
 
-### Using bundler
-Add gitalytics to your Gemfile
+Or add it to your Gemfile:
 
-    gem "gitalytics"
-
-Install  the gem
-
-    bundle install
+    gem 'gitalytics'
 
 ## Usage
-Open a terminal window pointing to your git repository and just run the gitalytics command:
+
+Run it from inside any git repository:
 
     $ gitalytics
 
-If you'd like to get a fancy html report like the one in the screenshot above, you will need to run the following command:
+This prints a short summary per author. For the full HTML report, run:
 
     $ gitalytics -h
 
-If you want to have the html report but don't want it to be opened right away just write:
+This writes `gitalytics_result.html` in the current directory and opens it in your browser. To write the report without opening it:
 
     $ gitalytics -n
 
-Note that gitalytics groups authors by name, you can change that and group by email using:
+The report is a single HTML file with no external CSS or JavaScript, so you can open it offline, attach it or publish it anywhere. It includes:
 
-    $ gitalytics -e
+- an overview of commits, authors, lines changed, files touched, active days and the longest streak
+- an activity timeline (per week, or per month for long histories)
+- a sortable author leaderboard with each author's share and trend
+- a weekday by hour punch card
+- the most changed files and top directories
+- highlights such as the first commit, the busiest day and the longest commit message
+
+It follows your system's light or dark theme. Author avatars come from Gravatar when available and fall back to initials.
+
+### Options
+
+| Option | Description |
+| --- | --- |
+| `-h`, `--html` | Write the HTML report and open it in your browser |
+| `-n`, `--no-browser` | Write the HTML report without opening it |
+| `-e`, `--group-email` | Group commits by author email instead of name |
+| `-b`, `--benchmark` | Print how long the analysis took |
+| `-v`, `--version` | Print the version |
+
+## Development
+
+    bundle install
+    bundle exec rake test
+    bundle exec rubocop
 
 ## License
 Copyright (c) 2016 Gonzalo Robaina

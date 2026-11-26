@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'digest/md5'
 
 class User
@@ -48,8 +50,8 @@ class User
   end
 
   def summary
-    "#{name} has made #{commits.count} commits on #{working_days} "\
-    "separate days during a span of #{commits_period} days."
+    "#{name} has made #{commits.count} commits on #{working_days} " \
+      "separate days during a span of #{commits_period} days."
   end
 
   def weekday_commits
