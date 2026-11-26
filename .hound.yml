@@ -1,2 +1,6 @@
+# RuboCop runs in GitHub Actions (see .rubocop.yml). Hound only ships an
+# old RuboCop that cannot read this config, so its Ruby linting is off.
+ruby:
+  enabled: false
 rubocop:
-  config_file: .rubocop.yml
+  enabled: false
