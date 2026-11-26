@@ -1,9 +1,8 @@
 # encoding: UTF-8
 
-require 'haml'
-require 'matrix'
 require 'gitalytics/commit'
 require 'gitalytics/gitlog'
+require 'gitalytics/report'
 require 'gitalytics/user'
 require 'gitalytics/version'
 
@@ -33,24 +32,15 @@ module Gitalytics
     end
   end
 
-  def prepare_data(data)
-    @users = data[:users].sort { |x, y| y.commits.length <=> x.commits.length }
-    @commits = data[:commits]
-    weekday_commits = @users.map(&:weekday_commits)
-    @weekday_commits = weekday_commits.map { |a| Vector[*a] }.inject(:+).to_a
-  end
-
-  def template_file
-    dir           = File.dirname(__FILE__)
-    filepath      = File.join(dir, '..', 'assets', 'gitalytics.html.haml')
-    File.read(filepath)
+  def repo_name
+    top = `git rev-parse --show-toplevel 2>/dev/null`.strip
+    File.basename(top.empty? ? Dir.pwd : top)
   end
 
   def output_html_report(data, open_in_browser)
-    File.open(OUTPUT_FILE, 'w+') do |file|
-      prepare_data(data)
-      file.write(Haml::Engine.new(template_file).render(self))
-    end
+    report = Report.new(users: data[:users], commits: data[:commits], repo_name: repo_name)
+    File.write(OUTPUT_FILE, report.render)
+    puts "Report written to #{File.expand_path(OUTPUT_FILE)}"
     open_report_in_browser if open_in_browser
   end
 

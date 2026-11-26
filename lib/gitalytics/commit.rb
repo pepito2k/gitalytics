@@ -1,5 +1,5 @@
 class Commit
-  attr_accessor :hash, :author, :date, :subject, :summary
+  attr_accessor :hash, :author, :date, :time, :subject, :summary
 
   def initialize(hash)
     self.hash = hash

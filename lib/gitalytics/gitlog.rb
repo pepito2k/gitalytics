@@ -1,6 +1,7 @@
 require 'gitalytics/commit'
 require 'gitalytics/user'
 require 'date'
+require 'time'
 
 module GitLog
   module_function
@@ -38,7 +39,8 @@ module GitLog
     regex = /^(?<date>.{25}) (?<name>.*?) \<(?<email>.*?)> (?<subject>.*?)$/
     data = block_string.match(regex)
     commit.subject = data[:subject]
-    commit.date = Date.parse(data[:date])
+    commit.time = Time.parse(data[:date])
+    commit.date = commit.time.to_date
 
     get_commit_author(data, commit, group_by)
     get_commit_summary(block_string, commit)
