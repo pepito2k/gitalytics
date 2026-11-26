@@ -1,20 +1,22 @@
-require 'color-generator'
 require 'digest/md5'
 
 class User
-  attr_accessor :name, :email, :commits, :colors
+  attr_accessor :name, :email, :commits
 
   def initialize(name, email)
     self.name    = name
     self.email   = email
     self.commits = []
-    self.colors  = ColorGenerator.new(saturation: 0.3, lightness: 0.75)
-                                 .create_rgb
-                                 .join(', ')
   end
 
   def gravatar
-    Digest::MD5.hexdigest(email)
+    Digest::MD5.hexdigest(email.to_s.strip.downcase)
+  end
+
+  def initials
+    parts = name.to_s.split(/[\s._-]+/).reject(&:empty?)
+    letters = parts.size > 1 ? [parts.first[0], parts.last[0]] : [name.to_s[0, 2]]
+    letters.join.upcase
   end
 
   def first_commit
@@ -48,10 +50,6 @@ class User
   def summary
     "#{name} has made #{commits.count} commits on #{working_days} "\
     "separate days during a span of #{commits_period} days."
-  end
-
-  def rgba(opacity = 1)
-    "rgba(#{colors}, #{opacity})"
   end
 
   def weekday_commits

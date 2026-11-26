@@ -35,10 +35,6 @@ class TestUser < Minitest::Test
       [{ filename: 'e.rb', insertions: 1, deletions: 1 }])
   end
 
-  def test_initial_color
-    assert_match(/\d{1,3}, \d{1,3}, \d{1,3}/, @user.colors)
-  end
-
   def test_gravatar_is_md5
     assert_match(/[a-f0-9]{32}/, @user.gravatar)
   end
@@ -91,7 +87,8 @@ class TestUser < Minitest::Test
     assert_equal(13, @user.total_changes)
   end
 
-  def test_rgba
-    assert_match(/rgba\(([\d]{,3}, ){3}1\)/, @user.rgba)
+  def test_initials
+    assert_equal('JD', @user.initials)
+    assert_equal('AP', User.new('apfunk', 'a@b.c').initials)
   end
 end

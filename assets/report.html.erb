@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Gitalytics <%= Gitalytics::VERSION %>">
+<title><%= h repo_name %> · Gitalytics</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --surface: #ffffff; --surface-2: #f0f2f5; --border: #e3e6eb;
+    --text: #1b1f27; --muted: #677084; --faint: #9aa2b1;
+    --accent: #4f6bed; --accent-soft: rgba(79,107,237,.14);
+    --plus: #1a9c63; --minus: #d64545;
+    --radius: 14px; --shadow: 0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1218; --surface: #171b23; --surface-2: #1f2430; --border: #2a303c;
+      --text: #e7eaf0; --muted: #9aa3b5; --faint: #6b7385;
+      --accent: #7b92ff; --accent-soft: rgba(123,146,255,.16);
+      --plus: #3ccf8e; --minus: #ff6b6b; --shadow: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 56px; }
+
+  header.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+  .brand { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .brand svg { width: 18px; height: 18px; color: var(--accent); }
+  h1 { margin: 6px 0 4px; font-size: 32px; line-height: 1.15; letter-spacing: -.02em; word-break: break-word; }
+  .subtitle { color: var(--muted); margin: 0; }
+  .meta { color: var(--faint); font-size: 13px; text-align: right; }
+
+  nav.tabs { position: sticky; top: 0; z-index: 5; display: flex; gap: 4px; overflow-x: auto; margin: 0 -20px 24px; padding: 10px 20px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+  nav.tabs a { white-space: nowrap; padding: 6px 12px; border-radius: 999px; color: var(--muted); font-weight: 500; font-size: 14px; }
+  nav.tabs a:hover { background: var(--surface-2); color: var(--text); text-decoration: none; }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); }
+  .kpi .label { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .kpi .value { font-size: 26px; font-weight: 650; letter-spacing: -.02em; margin-top: 4px; }
+  .kpi .hint { color: var(--faint); font-size: 12.5px; }
+  .plus { color: var(--plus); } .minus { color: var(--minus); }
+
+  section.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 24px; box-shadow: var(--shadow); scroll-margin-top: 64px; }
+  section.card > header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 16px; }
+  h2 { font-size: 18px; margin: 0; letter-spacing: -.01em; }
+  .card .sub { color: var(--muted); font-size: 13.5px; margin: 2px 0 0; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+  .grid-2 > section.card { margin-bottom: 0; }
+  .grid-2 + section, .grid-2 { margin-bottom: 24px; }
+
+  svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
+  svg .grid { stroke: var(--border); stroke-width: 1; }
+  svg .axis { fill: var(--faint); font-size: 11px; }
+  svg .bar { fill: var(--accent); }
+  svg .bar:hover { fill: color-mix(in srgb, var(--accent) 70%, var(--text)); }
+  svg .dot { fill: var(--accent); opacity: .85; }
+  svg .dot:hover { opacity: 1; }
+  svg .dot.empty { fill: var(--border); opacity: 1; }
+  .spark { width: 96px; height: 28px; display: block; }
+
+  .sharebar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--surface-2); margin-bottom: 18px; }
+  .sharebar span { display: block; height: 100%; }
+
+  .table-wrap { overflow-x: auto; margin: 0 -24px; padding: 0 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; padding: 0 10px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; }
+  th.num, td.num { text-align: right; }
+  th[aria-sort="ascending"]::after { content: " ↑"; } th[aria-sort="descending"]::after { content: " ↓"; }
+  td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: middle; white-space: nowrap; }
+  tr:last-child td { border-bottom: 0; }
+  .who { display: flex; align-items: center; gap: 10px; min-width: 200px; max-width: 300px; }
+  .who > span:last-child { min-width: 0; } .who .name, .who .email { overflow: hidden; text-overflow: ellipsis; }
+  .avatar { position: relative; flex: none; width: 34px; height: 34px; border-radius: 50%; color: #fff; display: grid; place-items: center; font-size: 12.5px; font-weight: 700; overflow: hidden; }
+  .avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .who .name { font-weight: 600; }
+  .who .email { color: var(--faint); font-size: 12.5px; }
+  .pct { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+  .pct .track { width: 64px; height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+  .pct .fill { display: block; height: 100%; border-radius: 999px; }
+  .rank { color: var(--faint); width: 1%; }
+  #authors-table:not(.expanded) tr.more { display: none; }
+  .show-all { margin-top: 14px; font: inherit; font-size: 14px; font-weight: 500; color: var(--accent); background: var(--accent-soft); border: 0; border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+  .show-all:hover { filter: brightness(1.05); }
+
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .rows li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .rows li:last-child { border-bottom: 0; }
+  .rows .path { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rows .meter { grid-column: 1 / -1; height: 4px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+  .rows .meter span { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
+  .rows .stat { color: var(--muted); font-size: 13px; }
+
+  .weekdays { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+  .weekdays div { background: var(--surface-2); border-radius: 10px; padding: 8px; text-align: center; font-size: 12px; color: var(--muted); }
+  .weekdays b { display: block; color: var(--text); font-size: 16px; }
+
+  .highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; align-items: start; }
+  .hl { background: var(--surface-2); border-radius: 12px; padding: 14px 16px; }
+  .hl .label { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .hl blockquote { margin: 6px 0; font-size: 15px; word-break: break-word; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .hl .by { color: var(--faint); font-size: 12.5px; }
+  .hl .big { font-size: 22px; font-weight: 650; margin: 4px 0 2px; }
+
+  footer.foot { color: var(--faint); font-size: 13px; text-align: center; margin-top: 32px; }
+  .empty-state { text-align: center; padding: 64px 0; color: var(--muted); }
+  @media (max-width: 600px) { h1 { font-size: 26px; } .meta { text-align: left; } section.card { padding: 18px 16px; } .table-wrap { margin: 0 -16px; padding: 0 16px; } .weekdays { gap: 4px; } .weekdays div { padding: 6px 2px; } .weekdays b { font-size: 14px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M6 8.5v7M18 15.5V12a4 4 0 0 0-4-4H8.5"/></svg>Gitalytics</div>
+      <h1><%= h repo_name %></h1>
+<% if empty? -%>
+      <p class="subtitle">No commits yet.</p>
+<% else -%>
+      <p class="subtitle"><%= plural(commits.size, 'commit') %> by <%= plural(users.size, 'author') %> from <%= fmt_date(first_commit.date) %> to <%= fmt_date(last_commit.date) %></p>
+<% end -%>
+    </div>
+    <div class="meta">Generated <%= generated_at.strftime('%b %-d, %Y at %H:%M') %></div>
+  </header>
+<% if empty? -%>
+  <div class="empty-state">This repository has no commits to analyze.</div>
+<% else -%>
+  <nav class="tabs" aria-label="Sections">
+    <a href="#activity">Activity</a><a href="#authors">Authors</a><a href="#rhythm">Rhythm</a><a href="#files">Files</a><a href="#highlights">Highlights</a>
+  </nav>
+
+  <div class="kpis">
+    <div class="kpi"><div class="label">Commits</div><div class="value"><%= num commits.size %></div><div class="hint"><%= format('%.1f', commits.size / active_days.to_f) %> per active day</div></div>
+    <div class="kpi"><div class="label">Authors</div><div class="value"><%= num users.size %></div><div class="hint">top: <%= h users.first.name %></div></div>
+    <div class="kpi"><div class="label">Lines changed</div><div class="value"><span class="plus">+<%= num total_insertions %></span></div><div class="hint minus">−<%= num total_deletions %></div></div>
+    <div class="kpi"><div class="label">Files touched</div><div class="value"><%= num files_touched %></div><div class="hint">across all history</div></div>
+    <div class="kpi"><div class="label">Active days</div><div class="value"><%= num active_days %></div><div class="hint">of <%= plural(span_days, 'day') %></div></div>
+    <div class="kpi"><div class="label">Longest streak</div><div class="value"><%= num longest_streak %></div><div class="hint"><%= longest_streak == 1 ? 'day' : 'days in a row' %></div></div>
+  </div>
+
+  <section class="card" id="activity">
+    <header>
+      <div><h2>Activity</h2><p class="sub">Commits per <%= bucket_unit %>. Hover a bar for details.</p></div>
+    </header>
+    <%= timeline_svg %>
+  </section>
+
+  <section class="card" id="authors">
+    <header>
+      <div><h2>Authors</h2><p class="sub">Who's been shaping this codebase. Click a column to sort.</p></div>
+    </header>
+    <div class="sharebar" aria-hidden="true">
+<% users.each do |u| -%>
+      <span style="width:<%= format('%.3f', share(u)) %>%;background:<%= color_for(u) %>" title="<%= h u.name %>: <%= format('%.1f', share(u)) %>%"></span>
+<% end -%>
+    </div>
+    <div class="table-wrap">
+    <table id="authors-table">
+      <thead><tr>
+        <th class="rank" data-type="num">#</th><th data-type="text">Author</th><th class="num" data-type="num">Commits</th><th class="num" data-type="num">Share</th>
+        <th class="num" data-type="num">Added</th><th class="num" data-type="num">Removed</th><th class="num" data-type="num">Active days</th>
+        <th data-type="num">First</th><th data-type="num">Last</th><th data-type="none">Trend</th>
+      </tr></thead>
+      <tbody>
+<% users.each_with_index do |u, i| -%>
+        <tr<%= ' class="more"' if i >= AUTHORS_SHOWN %>>
+          <td class="rank" data-v="<%= i + 1 %>"><%= i + 1 %></td>
+          <td data-v="<%= h u.name.to_s.downcase %>" title="<%= h u.name %> &lt;<%= h u.email %>&gt;"><div class="who">
+            <span class="avatar" style="background:<%= color_for(u) %>"><%= h u.initials %><img src="https://www.gravatar.com/avatar/<%= u.gravatar %>?s=68&amp;d=404" alt="" loading="lazy" onerror="this.remove()"></span>
+            <span><div class="name"><%= h u.name %></div><div class="email"><%= h u.email %></div></span>
+          </div></td>
+          <td class="num" data-v="<%= u.commits.size %>"><%= num u.commits.size %></td>
+          <td class="num" data-v="<%= share(u) %>"><div class="pct"><span><%= format('%.1f', share(u)) %>%</span><span class="track"><span class="fill" style="width:<%= format('%.2f', share(u)) %>%;background:<%= color_for(u) %>"></span></span></div></td>
+          <td class="num plus" data-v="<%= u.total_insertions %>">+<%= num u.total_insertions %></td>
+          <td class="num minus" data-v="<%= u.total_deletions %>">−<%= num u.total_deletions %></td>
+          <td class="num" data-v="<%= u.working_days %>"><%= num u.working_days %></td>
+          <td data-v="<%= u.first_commit.date.jd %>"><%= u.first_commit.date.strftime('%b %Y') %></td>
+          <td data-v="<%= u.last_commit.date.jd %>"><%= u.last_commit.date.strftime('%b %Y') %></td>
+          <td><%= sparkline_svg(u) %></td>
+        </tr>
+<% end -%>
+      </tbody>
+    </table>
+    </div>
+<% if users.size > AUTHORS_SHOWN -%>
+    <button type="button" class="show-all" id="authors-toggle" data-more="Show all <%= num users.size %> authors" data-less="Show top <%= AUTHORS_SHOWN %> only">Show all <%= num users.size %> authors</button>
+<% end -%>
+  </section>
+
+  <section class="card" id="rhythm">
+    <header>
+      <div><h2>Rhythm</h2><p class="sub">When commits happen, by weekday and hour (in each author's local time).</p></div>
+    </header>
+    <%= punch_card_svg %>
+    <div class="weekdays">
+<% %w[Mon Tue Wed Thu Fri Sat Sun].each_with_index do |d, i| -%>
+      <div><b><%= num weekday_totals[i] %></b><%= d %></div>
+<% end -%>
+    </div>
+  </section>
+
+  <div class="grid-2" id="files">
+    <section class="card">
+      <header><div><h2>Most changed files</h2><p class="sub">By lines added + removed.</p></div></header>
+<% files = top_files; max_churn = files.map { |_, s| s[:insertions] + s[:deletions] }.max.to_i -%>
+<% if files.empty? -%>
+      <p class="sub">No file changes recorded.</p>
+<% else -%>
+      <ul class="rows">
+<% files.each do |name, s| churn = s[:insertions] + s[:deletions] -%>
+        <li><span class="path" title="<%= h name %>"><%= h name %></span><span class="stat"><span class="plus">+<%= num s[:insertions] %></span> <span class="minus">−<%= num s[:deletions] %></span> · <%= plural(s[:commits], 'commit') %></span><span class="meter"><span style="width:<%= max_churn.zero? ? 0 : format('%.1f', churn * 100.0 / max_churn) %>%"></span></span></li>
+<% end -%>
+      </ul>
+<% end -%>
+    </section>
+    <section class="card">
+      <header><div><h2>Top directories</h2><p class="sub">Where the churn is, by top-level folder.</p></div></header>
+<% dirs = top_directories; max_dir = dirs.map(&:last).max.to_i -%>
+<% if dirs.empty? -%>
+      <p class="sub">No file changes recorded.</p>
+<% else -%>
+      <ul class="rows">
+<% dirs.each do |dir, n| -%>
+        <li><span class="path"><%= h dir %></span><span class="stat"><%= num n %> lines</span><span class="meter"><span style="width:<%= max_dir.zero? ? 0 : format('%.1f', n * 100.0 / max_dir) %>%"></span></span></li>
+<% end -%>
+      </ul>
+<% end -%>
+    </section>
+  </div>
+
+  <section class="card" id="highlights">
+    <header><div><h2>Highlights</h2><p class="sub">A few fun facts from the log.</p></div></header>
+    <div class="highlights">
+      <div class="hl"><div class="label">First commit</div><blockquote><%= h first_commit.subject %></blockquote><div class="by"><%= h first_commit.author.name %> · <%= fmt_date(first_commit.date) %></div></div>
+      <div class="hl"><div class="label">Latest commit</div><blockquote><%= h last_commit.subject %></blockquote><div class="by"><%= h last_commit.author.name %> · <%= fmt_date(last_commit.date) %></div></div>
+<% if (s = shortest_message) -%>
+      <div class="hl"><div class="label">Shortest message</div><blockquote><%= h s.subject %></blockquote><div class="by"><%= h s.author.name %> · <%= fmt_date(s.date) %></div></div>
+<% end -%>
+<% l = longest_message -%>
+      <div class="hl"><div class="label">Longest message</div><blockquote><%= h l.subject %></blockquote><div class="by"><%= h l.author.name %> · <%= fmt_date(l.date) %> · <%= l.subject.length %> chars</div></div>
+<% day, day_commits = busiest_day -%>
+      <div class="hl"><div class="label">Busiest day</div><div class="big"><%= fmt_date(day) %></div><div class="by"><%= plural(day_commits.size, 'commit') %> by <%= h day_commits.map { |c| c.author.name }.uniq.join(', ') %></div></div>
+<% top_wd = weekday_totals.each_with_index.max_by(&:first) -%>
+      <div class="hl"><div class="label">Favorite weekday</div><div class="big"><%= %w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday][top_wd.last] %></div><div class="by"><%= format('%.0f', top_wd.first * 100.0 / commits.size) %>% of all commits</div></div>
+    </div>
+  </section>
+<% end -%>
+
+  <footer class="foot">Made with <a href="https://github.com/pepito2k/gitalytics">Gitalytics</a> v<%= Gitalytics::VERSION %></footer>
+</div>
+<script>
+(function () {
+  var table = document.getElementById('authors-table');
+  if (!table) return;
+  var heads = table.querySelectorAll('th');
+  heads.forEach(function (th, col) {
+    if (th.dataset.type === 'none') return;
+    th.addEventListener('click', function () {
+      var asc = th.getAttribute('aria-sort') !== 'ascending';
+      heads.forEach(function (h) { h.removeAttribute('aria-sort'); });
+      th.setAttribute('aria-sort', asc ? 'ascending' : 'descending');
+      var body = table.tBodies[0];
+      var rows = Array.prototype.slice.call(body.rows);
+      rows.sort(function (a, b) {
+        var x = a.cells[col].dataset.v, y = b.cells[col].dataset.v;
+        var r = th.dataset.type === 'num' ? parseFloat(x) - parseFloat(y) : x.localeCompare(y);
+        return asc ? r : -r;
+      });
+      rows.forEach(function (r) { body.appendChild(r); });
+      markMore();
+    });
+  });
+  // Only the first rows (in the current sort order) are shown until expanded.
+  function markMore() {
+    Array.prototype.forEach.call(table.tBodies[0].rows, function (r, i) {
+      r.classList.toggle('more', i >= <%= AUTHORS_SHOWN %>);
+    });
+  }
+  var toggle = document.getElementById('authors-toggle');
+  if (toggle) toggle.addEventListener('click', function () {
+    var open = table.classList.toggle('expanded');
+    toggle.textContent = open ? toggle.dataset.less : toggle.dataset.more;
+  });
+})();
+</script>
+</body>
+</html>
