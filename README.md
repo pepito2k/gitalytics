@@ -26,7 +26,24 @@ Run it from inside any git repository:
 
     $ gitalytics
 
-This prints a short summary per author. For the full HTML report, run:
+This prints a summary of the repository: the period covered, totals for lines, files and active days, and a table of the top authors with their share of commits:
+
+    gitalytics  83 commits by 10 authors
+    Jan 6, 2014 to Nov 26, 2026 (4,708 days)
+
+      Lines          +4,056 -2,258    Longest streak  3 days
+      Files touched  44               Busiest day     Nov 26, 2026 (14 commits)
+      Active days    18 of 4,708      Commits/day     4.6
+
+      Author           Commits  Share               Added  Deleted  Last commit
+      Gonzalo Robaina       57  68.7%  ██████▉     +2,045   -1,163  2026-11-26
+      Claude                 9  10.8%  █▏          +1,501     -912  2026-11-26
+      Alex Funk              4   4.8%  ▌               +7       -5  2015-10-17
+      ... and 7 more authors (use --top 0 to list everyone)
+
+The table fits your terminal width and uses colors in a terminal. Set `NO_COLOR` or pass `--no-color` to turn colors off, and use `--top N` to list more or fewer authors.
+
+For the full HTML report, run:
 
     $ gitalytics -h
 
@@ -61,6 +78,8 @@ To look at a time window, or to feed the numbers into another tool:
 | `-s`, `--since DATE` | Only count commits after `DATE` (anything git accepts, e.g. `2024-01-01` or `"6 months ago"`) |
 | `-u`, `--until DATE` | Only count commits before `DATE` |
 | `-m`, `--no-merges` | Leave merge commits out of the stats |
+| `-t`, `--top N` | How many authors the terminal summary lists (default 10, `0` for all) |
+| `--[no-]color` | Force or disable colors in the terminal summary |
 | `-e`, `--group-email` | Group commits by author email instead of name (case-insensitive) |
 | `-b`, `--benchmark` | Print how long the analysis took |
 | `-v`, `--version` | Print the version |

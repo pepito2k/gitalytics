@@ -53,6 +53,16 @@ OptionParser.new do |opts|
     options[:no_merges] = true
   end
 
+  opts.on('-t', '--top N', Integer,
+          "How many authors the summary lists (default: #{Gitalytics::CliReport::DEFAULT_TOP}, 0 for all)") do |n|
+    options[:top] = n
+  end
+
+  opts.on('--[no-]color',
+          'Force or disable colors in the summary (default: on in a terminal, off with NO_COLOR)') do |c|
+    options[:color] = c
+  end
+
   opts.on('-e', '--group-email', "Group commits by author's email address") do
     options[:group_by] = 'email'
   end
