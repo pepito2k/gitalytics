@@ -3,6 +3,9 @@
 #### v.1.4.0
 * Brand new HTML report: a single self-contained page (no CDN assets) with inline SVG charts, light and dark themes, and a mobile-friendly layout.
 * New report sections: activity timeline, sortable author leaderboard with trends, weekday/hour punch card, most changed files, top directories and highlights.
+* New `--since` / `--until` options to analyze a date range.
+* New `--json` option that prints a machine-readable summary.
+* New `--output FILE` option to choose where the HTML report is written.
 * Commits now keep their full timestamp (`Commit#time`).
 * Dropped the `haml`, `color-generator` and `matrix` dependencies; gitalytics now has no runtime dependencies.
 * Requires Ruby 3.1 or newer.
