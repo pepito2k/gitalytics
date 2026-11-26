@@ -18,16 +18,17 @@ Layout/LineLength:
   Exclude:
     - 'lib/gitalytics/report.rb' # inline SVG markup
 
-# The report builder and its SVG helpers are long by nature.
+# The report builders and their SVG/table helpers are long by nature.
 Metrics/ClassLength:
   Exclude:
     - 'lib/gitalytics/report.rb'
+    - 'lib/gitalytics/cli_report.rb'
 Metrics/MethodLength:
   Max: 25
   AllowedMethods: [timeline_svg, punch_card_svg]
 Metrics/AbcSize:
   Max: 35
-  AllowedMethods: [timeline_svg, punch_card_svg]
+  AllowedMethods: [timeline_svg, punch_card_svg, columns]
 
 Metrics/BlockLength:
   Exclude:

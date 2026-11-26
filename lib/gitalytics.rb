@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'gitalytics/cli_report'
 require 'gitalytics/commit'
 require 'gitalytics/gitlog'
 require 'gitalytics/json_report'
@@ -22,15 +23,14 @@ module Gitalytics
     when 'json'
       puts JsonReport.new(build_report(data)).render
     else
-      output_cli_report(data[:users])
+      output_cli_report(data, options)
     end
   end
 
-  def output_cli_report(users)
-    puts 'No commits found.' if users.empty?
-    users.each do |user|
-      puts user.summary
-    end
+  def output_cli_report(data, options, io = $stdout)
+    color = options.fetch(:color) { CliReport.color?(io) }
+    io.print CliReport.new(build_report(data), color: color, width: CliReport.width_for(io),
+                                               top: options.fetch(:top, CliReport::DEFAULT_TOP)).render
   end
 
   def repo_name
