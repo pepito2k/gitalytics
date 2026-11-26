@@ -19,7 +19,7 @@ OptionParser.new do |opts|
   opts.banner = 'Usage: gitalytics [options]'
 
   opts.on('-v', '--version', 'Display gem version') do
-    p "Gitalytics #{Gitalytics::VERSION}"
+    puts "Gitalytics #{Gitalytics::VERSION}"
     exit
   end
 
@@ -31,6 +31,22 @@ OptionParser.new do |opts|
   opts.on('-n', '--no-browser', 'Do not open html report in browser') do
     options[:format] = 'html'
     options[:browser] = false
+  end
+
+  opts.on('-j', '--json', 'Print a JSON summary to stdout') do
+    options[:format] = 'json'
+  end
+
+  opts.on('-o', '--output FILE', "Where to write the HTML report (default: #{Gitalytics::OUTPUT_FILE})") do |file|
+    options[:output] = file
+  end
+
+  opts.on('-s', '--since DATE', 'Only commits after DATE (e.g. 2024-01-01 or "6 months ago")') do |date|
+    options[:since] = date
+  end
+
+  opts.on('-u', '--until DATE', 'Only commits before DATE') do |date|
+    options[:until] = date
   end
 
   opts.on('-e', '--group-email', "Group commits by author's email address") do

@@ -28,3 +28,7 @@ Metrics/MethodLength:
 Metrics/AbcSize:
   Max: 35
   AllowedMethods: [timeline_svg, punch_card_svg]
+
+Metrics/BlockLength:
+  Exclude:
+    - 'bin/gitalytics' # option definitions

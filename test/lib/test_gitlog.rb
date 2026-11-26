@@ -79,4 +79,15 @@ class TestCommit < Minitest::Test
     # assert_equal(users.last, commit.author)
     # assert_equal(users.last.commits.last, commit)
   end
+
+  def test_git_log_command_without_filters
+    assert_equal ['git', 'log', '--numstat', '--pretty=%H %ai %an <%ae> %s'], GitLog.git_log_command
+  end
+
+  def test_git_log_command_with_date_filters
+    cmd = GitLog.git_log_command(since: '2024-01-01', until_date: '6 months ago')
+
+    assert_includes cmd, '--since=2024-01-01'
+    assert_includes cmd, '--until=6 months ago'
+  end
 end

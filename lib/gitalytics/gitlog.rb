@@ -11,8 +11,8 @@ module GitLog
   @users   = []
   @commits = []
 
-  def parse_git_log(group_by)
-    blocks = get_blocks(get_log)
+  def parse_git_log(group_by, since: nil, until_date: nil)
+    blocks = get_blocks(get_log(since: since, until_date: until_date))
 
     blocks.each do |(hash, block_string)|
       @commits << parse_block(hash, block_string, group_by)
@@ -21,8 +21,15 @@ module GitLog
     { users: @users, commits: @commits }
   end
 
-  def get_log # rubocop:disable Naming/AccessorMethodName
-    `git log --numstat --pretty='%H %ai %an <%ae> %s'`
+  def get_log(since: nil, until_date: nil)
+    IO.popen(git_log_command(since: since, until_date: until_date), err: File::NULL, &:read)
+  end
+
+  def git_log_command(since: nil, until_date: nil)
+    cmd = ['git', 'log', '--numstat', '--pretty=%H %ai %an <%ae> %s']
+    cmd << "--since=#{since}" if since
+    cmd << "--until=#{until_date}" if until_date
+    cmd
   end
 
   def get_blocks(log_string)

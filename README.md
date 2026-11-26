@@ -45,12 +45,21 @@ The report is a single HTML file with no external CSS or JavaScript, so you can 
 
 It follows your system's light or dark theme. Author avatars come from Gravatar when available and fall back to initials.
 
+To look at a time window, or to feed the numbers into another tool:
+
+    $ gitalytics -h --since "1 year ago"
+    $ gitalytics --json --since 2024-01-01 --until 2024-12-31 > stats.json
+
 ### Options
 
 | Option | Description |
 | --- | --- |
 | `-h`, `--html` | Write the HTML report and open it in your browser |
 | `-n`, `--no-browser` | Write the HTML report without opening it |
+| `-o`, `--output FILE` | Where to write the HTML report (default `gitalytics_result.html`) |
+| `-j`, `--json` | Print a JSON summary (totals, authors, weekdays, top files) to stdout |
+| `-s`, `--since DATE` | Only count commits after `DATE` (anything git accepts, e.g. `2024-01-01` or `"6 months ago"`) |
+| `-u`, `--until DATE` | Only count commits before `DATE` |
 | `-e`, `--group-email` | Group commits by author email instead of name |
 | `-b`, `--benchmark` | Print how long the analysis took |
 | `-v`, `--version` | Print the version |
