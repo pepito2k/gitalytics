@@ -75,6 +75,8 @@ GEM
     tsort (0.2.0)
 
 PLATFORMS
+  ruby
+  x86_64-linux
   x86_64-linux-gnu
 
 DEPENDENCIES
