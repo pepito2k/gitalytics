@@ -22,11 +22,11 @@ class User
   end
 
   def first_commit
-    commits.min_by(&:date)
+    commits.min_by(&:time)
   end
 
   def last_commit
-    commits.max_by(&:date)
+    commits.max_by(&:time)
   end
 
   def commits_period
@@ -38,11 +38,11 @@ class User
   end
 
   def total_insertions
-    commits.map(&:insertions).inject(0) { |a, e| a + e }
+    commits.sum(&:insertions)
   end
 
   def total_deletions
-    commits.map(&:deletions).inject(0) { |a, e| a + e }
+    commits.sum(&:deletions)
   end
 
   def total_changes

@@ -60,9 +60,12 @@ To look at a time window, or to feed the numbers into another tool:
 | `-j`, `--json` | Print a JSON summary (totals, authors, weekdays, top files) to stdout |
 | `-s`, `--since DATE` | Only count commits after `DATE` (anything git accepts, e.g. `2024-01-01` or `"6 months ago"`) |
 | `-u`, `--until DATE` | Only count commits before `DATE` |
-| `-e`, `--group-email` | Group commits by author email instead of name |
+| `-m`, `--no-merges` | Leave merge commits out of the stats |
+| `-e`, `--group-email` | Group commits by author email instead of name (case-insensitive) |
 | `-b`, `--benchmark` | Print how long the analysis took |
 | `-v`, `--version` | Print the version |
+
+Authors are read through git's [`.mailmap`](https://git-scm.com/docs/gitmailmap), so add one to the repository to merge the identities of people who committed under several names or emails.
 
 ## Development
 

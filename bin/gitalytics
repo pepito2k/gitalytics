@@ -49,6 +49,10 @@ OptionParser.new do |opts|
     options[:until] = date
   end
 
+  opts.on('-m', '--no-merges', 'Leave merge commits out of the stats') do
+    options[:no_merges] = true
+  end
+
   opts.on('-e', '--group-email', "Group commits by author's email address") do
     options[:group_by] = 'email'
   end
@@ -58,8 +62,13 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-if options[:benchmark]
-  puts(Benchmark.measure { Gitalytics.analyze(options) })
-else
-  Gitalytics.analyze(options)
+begin
+  if options[:benchmark]
+    puts(Benchmark.measure { Gitalytics.analyze(options) })
+  else
+    Gitalytics.analyze(options)
+  end
+rescue Gitalytics::GitError => e
+  warn "gitalytics: #{e.message}"
+  exit 1
 end

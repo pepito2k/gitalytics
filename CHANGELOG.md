@@ -7,6 +7,13 @@
 * New `--json` option that prints a machine-readable summary.
 * New `--output FILE` option to choose where the HTML report is written.
 * Commits now keep their full timestamp (`Commit#time`).
+* New `--no-merges` option to leave merge commits out.
+* Author names and emails respect `.mailmap`; `--group-email` ignores case.
+* Binary files are now counted as touched files (they used to be skipped), and renamed files keep their whole history under their current path.
+* File names with spaces, quotes or non-ASCII characters and commit messages with invalid UTF-8 no longer break parsing.
+* Faster on large repositories: the log is streamed and parsed record by record, and authors are looked up in a hash.
+* `gitalytics` now exits with an error message when run outside a git repository instead of printing "No commits found.".
+* `Commit#hash` is now `Commit#sha` (the old name overrode `Object#hash`, so commits could not be used as hash keys or in `uniq`).
 * Dropped the `haml`, `color-generator` and `matrix` dependencies; gitalytics now has no runtime dependencies.
 * Requires Ruby 3.1 or newer.
 * Runs on modern Ruby again (fixes for Bundler, Minitest and stdlib changes).

@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 class Commit
-  attr_accessor :hash, :author, :date, :time, :subject, :summary
+  attr_accessor :sha, :author, :author_name, :author_email, :date, :time, :subject, :summary
 
-  def initialize(hash)
-    self.hash = hash
+  def initialize(sha)
+    self.sha = sha
     self.summary = []
   end
 
   def insertions
-    summary.inject(0) { |a, e| a + e[:insertions] }
+    summary.sum { |s| s[:insertions] }
   end
 
   def deletions
-    summary.inject(0) { |a, e| a + e[:deletions] }
+    summary.sum { |s| s[:deletions] }
   end
 
   def files_committed
