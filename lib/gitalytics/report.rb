@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'date'
 require 'erb'
 
@@ -11,7 +13,7 @@ module Gitalytics
 
     # Categorical palette for the top authors; everyone else shares OTHER_COLOR.
     PALETTE = %w[#4f6bed #e8743b #19a979 #ed4a7b #945ecf #13a4b4 #d6a419 #6c8893].freeze
-    OTHER_COLOR = '#a3abb8'.freeze
+    OTHER_COLOR = '#a3abb8'
     AUTHORS_SHOWN = 15
 
     attr_reader :users, :commits, :repo_name, :generated_at
@@ -183,16 +185,16 @@ module Gitalytics
 
     # ---- Formatting / SVG helpers ----------------------------------------
 
-    def num(n)
-      n.to_i.to_s.reverse.scan(/\d{1,3}/).join(',').reverse
+    def num(value)
+      value.to_i.to_s.reverse.scan(/\d{1,3}/).join(',').reverse
     end
 
     def fmt_date(date)
       date.strftime('%b %-d, %Y')
     end
 
-    def plural(n, word)
-      "#{num(n)} #{n == 1 ? word : "#{word}s"}"
+    def plural(count, word)
+      "#{num(count)} #{count == 1 ? word : "#{word}s"}"
     end
 
     def timeline_svg(width: 960, height: 220)
@@ -212,14 +214,15 @@ module Gitalytics
         parts << %(<text class="axis" x="#{pad_l - 6}" y="#{(y + 4).round(1)}" text-anchor="end">#{t}</text>)
       end
       data.each_with_index do |(bucket, count), i|
-        x = pad_l + i * slot
+        x = pad_l + (i * slot)
         h = count * plot_h / max.to_f
         y = 8 + plot_h - h
         title = h("#{bucket_label(bucket)}: #{plural(count, 'commit')}")
-        parts << %(<rect class="bar" x="#{x.round(2)}" y="#{y.round(2)}" width="#{bar_w.round(2)}" height="#{[h, 0].max.round(2)}" rx="1.5"><title>#{title}</title></rect>)
+        parts << %(<rect class="bar" x="#{x.round(2)}" y="#{y.round(2)}" width="#{bar_w.round(2)}" height="#{[h,
+                                                                                                              0].max.round(2)}" rx="1.5"><title>#{title}</title></rect>)
       end
       label_years(data).each do |i, text|
-        x = pad_l + i * slot
+        x = pad_l + (i * slot)
         parts << %(<text class="axis" x="#{x.round(1)}" y="#{height - 6}">#{text}</text>)
       end
 
@@ -230,7 +233,9 @@ module Gitalytics
       data = timeline(user.commits).map(&:last)
       max = [data.max, 1].max
       step = data.size > 1 ? width.to_f / (data.size - 1) : width
-      points = data.each_with_index.map { |v, i| "#{(i * step).round(1)},#{(height - 2 - v * (height - 4) / max.to_f).round(1)}" }
+      points = data.each_with_index.map do |v, i|
+        "#{(i * step).round(1)},#{(height - 2 - (v * (height - 4) / max.to_f)).round(1)}"
+      end
       points = ["0,#{height - 2}", "#{width},#{height - 2}"] if data.size < 2
       color = color_for(user)
       %(<svg viewBox="0 0 #{width} #{height}" class="spark" aria-hidden="true"><polyline points="#{points.join(' ')}" fill="none" stroke="#{color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>)
@@ -239,15 +244,15 @@ module Gitalytics
     def punch_card_svg(width: 960)
       cell = (width - 48) / 24.0
       r_max = cell * 0.42
-      height = (cell * 7 + 22).round
+      height = ((cell * 7) + 22).round
       max = [punch_card.flatten.max, 1].max
       days = %w[Mon Tue Wed Thu Fri Sat Sun]
       parts = []
       punch_card.each_with_index do |row, d|
-        cy = d * cell + cell / 2
+        cy = (d * cell) + (cell / 2)
         parts << %(<text class="axis" x="40" y="#{(cy + 4).round(1)}" text-anchor="end">#{days[d]}</text>)
         row.each_with_index do |count, hr|
-          cx = 48 + hr * cell + cell / 2
+          cx = 48 + (hr * cell) + (cell / 2)
           r = count.zero? ? 1.5 : [Math.sqrt(count / max.to_f) * r_max, 2.5].max
           cls = count.zero? ? 'dot empty' : 'dot'
           title = h("#{days[d]} #{format('%02d:00', hr)}: #{plural(count, 'commit')}")
@@ -255,8 +260,9 @@ module Gitalytics
         end
       end
       [0, 6, 12, 18, 23].each do |hr|
-        cx = 48 + hr * cell + cell / 2
-        parts << %(<text class="axis" x="#{cx.round(1)}" y="#{height - 4}" text-anchor="middle">#{format('%02d', hr)}h</text>)
+        cx = 48 + (hr * cell) + (cell / 2)
+        parts << %(<text class="axis" x="#{cx.round(1)}" y="#{height - 4}" text-anchor="middle">#{format('%02d',
+                                                                                                         hr)}h</text>)
       end
       %(<svg viewBox="0 0 #{width} #{height}" class="chart" role="img" aria-label="Commits by weekday and hour">#{parts.join}</svg>)
     end
@@ -277,12 +283,13 @@ module Gitalytics
 
     def label_years(data)
       seen = {}
-      data.each_with_index.filter_map do |(bucket, _), i|
+      labels = data.each_with_index.filter_map do |(bucket, _), i|
         next if seen[bucket.year]
 
         seen[bucket.year] = true
         [i, bucket.year.to_s]
-      end.then { |labels| thin_labels(labels, data.size) }
+      end
+      thin_labels(labels, data.size)
     end
 
     # Keep year labels from colliding on long histories.

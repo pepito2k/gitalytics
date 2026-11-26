@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.join(File.dirname(__FILE__), '..', 'test_helper.rb')
 require 'minitest/autorun'
 require 'gitalytics/gitlog'
@@ -16,10 +18,10 @@ class TestCommit < Minitest::Test
       File.read(File.join('test', 'files', 'block3'))
     ]
 
-    expected_commits = [
-      'bea63e76c7c6d5afd42ac5b24a911b36e5c261f9',
-      'd392710a9e657c72e73ca87df3ed2c8c802441e4',
-      '9a99ae5dbc1eaadf268ca925cce9b68d10216151'
+    expected_commits = %w[
+      bea63e76c7c6d5afd42ac5b24a911b36e5c261f9
+      d392710a9e657c72e73ca87df3ed2c8c802441e4
+      9a99ae5dbc1eaadf268ca925cce9b68d10216151
     ]
 
     blocks = GitLog.get_blocks(GIT_LOG)
@@ -52,7 +54,7 @@ class TestCommit < Minitest::Test
     GitLog.parse_block(hash, block, 'email')
 
     user = GitLog.get_user('name', 'email@example.com', 'name')
-    users = GitLog.instance_variable_get("@users")
+    users = GitLog.instance_variable_get('@users')
 
     assert_equal(2, users.count)
     assert_equal(user, users.last)
@@ -61,7 +63,7 @@ class TestCommit < Minitest::Test
   end
 
   def test_get_user_returns_the_user
-    users = [User.new('name', 'email@example.com')]
+    [User.new('name', 'email@example.com')]
 
     user = GitLog.get_user('name', 'email@example.com', 'email')
     # assert_equal(user, users.last)

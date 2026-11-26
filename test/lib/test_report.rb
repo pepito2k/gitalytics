@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.join(File.dirname(__FILE__), '..', 'test_helper.rb')
 require 'minitest/autorun'
 require 'gitalytics'
@@ -67,6 +69,7 @@ class TestReport < Minitest::Test
 
   def test_render_is_self_contained_and_escaped
     html = @report.render
+
     assert_includes html, '<title>demo · Gitalytics</title>'
     assert_includes html, 'Bob &lt;script&gt;'
     refute_includes html, 'Bob <script>'
@@ -76,6 +79,7 @@ class TestReport < Minitest::Test
 
   def test_render_without_commits
     html = Gitalytics::Report.new(users: [], commits: [], repo_name: 'empty').render
+
     assert_includes html, 'no commits to analyze'
   end
 end

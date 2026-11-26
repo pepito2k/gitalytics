@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# frozen_string_literal: true
 
 require 'gitalytics/commit'
 require 'gitalytics/gitlog'
@@ -7,7 +7,7 @@ require 'gitalytics/user'
 require 'gitalytics/version'
 
 module Gitalytics
-  OUTPUT_FILE = 'gitalytics_result.html'.freeze
+  OUTPUT_FILE = 'gitalytics_result.html'
 
   module_function
 
@@ -21,10 +21,6 @@ module Gitalytics
       output_cli_report(data[:users])
     end
   end
-
-  private
-
-  module_function
 
   def output_cli_report(users)
     users.each do |user|

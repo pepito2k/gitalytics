@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.join(File.dirname(__FILE__), '..', 'test_helper.rb')
 require 'minitest/autorun'
 require 'gitalytics/user'
@@ -20,19 +22,23 @@ class TestUser < Minitest::Test
     user.commits << create_commit(
       'abcdef',
       '2000-01-10',
-      [{ filename: 'a.rb', insertions: 1, deletions: 0 }])
+      [{ filename: 'a.rb', insertions: 1, deletions: 0 }]
+    )
     user.commits << create_commit(
       'abcdef',
       '2000-01-01',
-      [{ filename: 'c.rb', insertions: 0, deletions: 1 }])
+      [{ filename: 'c.rb', insertions: 0, deletions: 1 }]
+    )
     user.commits << create_commit(
       'abcdef',
       '2000-01-01',
-      [{ filename: 'd.rb', insertions: 4, deletions: 5 }])
+      [{ filename: 'd.rb', insertions: 4, deletions: 5 }]
+    )
     user.commits << create_commit(
       'abcdef',
       '2000-01-08',
-      [{ filename: 'e.rb', insertions: 1, deletions: 1 }])
+      [{ filename: 'e.rb', insertions: 1, deletions: 1 }]
+    )
   end
 
   def test_gravatar_is_md5

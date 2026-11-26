@@ -1,0 +1,30 @@
+plugins:
+  - rubocop-minitest
+  - rubocop-rake
+
+AllCops:
+  TargetRubyVersion: 3.1
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - 'vendor/**/*'
+    - 'coverage/**/*'
+
+Style/Documentation:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - 'lib/gitalytics/report.rb' # inline SVG markup
+
+# The report builder and its SVG helpers are long by nature.
+Metrics/ClassLength:
+  Exclude:
+    - 'lib/gitalytics/report.rb'
+Metrics/MethodLength:
+  Max: 25
+  AllowedMethods: [timeline_svg, punch_card_svg]
+Metrics/AbcSize:
+  Max: 35
+  AllowedMethods: [timeline_svg, punch_card_svg]

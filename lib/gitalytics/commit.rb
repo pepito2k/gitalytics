@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Commit
   attr_accessor :hash, :author, :date, :time, :subject, :summary
 
