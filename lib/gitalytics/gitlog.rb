@@ -1,90 +1,140 @@
 # frozen_string_literal: true
 
 require 'gitalytics/commit'
+require 'gitalytics/git_error'
 require 'gitalytics/user'
 require 'date'
+require 'open3'
 require 'time'
 
+# Runs `git log` and turns its output into Commit and User objects.
+#
+# The log is requested with `-z` and ASCII control characters as separators,
+# so author names, subjects and file names (spaces, quotes, non-ASCII, `=>`)
+# never collide with the format. Records are parsed as they stream in, so big
+# histories are never held in memory as a single string.
 module GitLog
   module_function
 
-  @users   = []
-  @commits = []
+  RECORD_SEP = "\x1e"
+  FIELD_SEP  = "\x1f"
+  # Author fields use %aN/%aE so .mailmap is respected; %aI is strict ISO 8601.
+  PRETTY = "--pretty=format:#{RECORD_SEP}%H#{FIELD_SEP}%aI#{FIELD_SEP}%aN#{FIELD_SEP}%aE#{FIELD_SEP}%s".freeze
+  EMPTY_REPO = /does not have any commits yet|bad default revision 'HEAD'/
 
-  def parse_git_log(group_by, since: nil, until_date: nil)
-    blocks = get_blocks(get_log(since: since, until_date: until_date))
-
-    blocks.each do |(hash, block_string)|
-      @commits << parse_block(hash, block_string, group_by)
+  def parse_git_log(group_by = 'name', since: nil, until_date: nil, no_merges: false)
+    cmd = git_log_command(since: since, until_date: until_date, no_merges: no_merges)
+    Open3.popen3(*cmd) do |stdin, stdout, stderr, wait|
+      stdin.close
+      errors = Thread.new { stderr.read }
+      data = parse(stdout.each_line(RECORD_SEP), group_by)
+      status = wait.value
+      check_status!(status, errors.value)
+      data
     end
-
-    { users: @users, commits: @commits }
+  rescue Errno::ENOENT
+    raise Gitalytics::GitError, 'git executable not found in PATH'
   end
 
-  def get_log(since: nil, until_date: nil)
-    IO.popen(git_log_command(since: since, until_date: until_date), err: File::NULL, &:read)
-  end
-
-  def git_log_command(since: nil, until_date: nil)
-    cmd = ['git', 'log', '--numstat', '--pretty=%H %ai %an <%ae> %s']
+  def git_log_command(since: nil, until_date: nil, no_merges: false)
+    cmd = ['git', '-c', 'core.quotePath=false', 'log', '--numstat', '-z', PRETTY]
+    cmd << '--no-merges' if no_merges
     cmd << "--since=#{since}" if since
     cmd << "--until=#{until_date}" if until_date
     cmd
   end
 
-  def get_blocks(log_string)
-    commits = log_string.scan(/^([a-f0-9]{40})/).map(&:first)
-    blocks  = log_string.split(/^[a-f0-9]{40}/).map(&:strip)
-    blocks.shift # get rid of first empty string
+  def check_status!(status, error_output)
+    return if status.success?
+    return if error_output.match?(EMPTY_REPO)
 
-    commits.zip(blocks)
+    message = error_output.strip.sub(/\Afatal:\s*/, '')
+    raise Gitalytics::GitError, message.empty? ? "git log exited with status #{status.exitstatus}" : message
   end
 
-  def parse_block(hash, block_string, group_by)
-    commit = Commit.new(hash)
+  # Parses an enumerable of raw records (as produced by `git_log_command`).
+  # Returns { users: [User], commits: [Commit] }, commits newest first.
+  def parse(records, group_by = 'name')
+    users = {}
+    commits = []
+    renames = {}
 
-    block_string.encode!('UTF-8', 'UTF8-MAC') if defined?(Encoding::UTF8_MAC)
+    records.each do |record|
+      record = clean(record.chomp(RECORD_SEP))
+      next if record.empty?
 
-    regex = /^(?<date>.{25}) (?<name>.*?) <(?<email>.*?)> (?<subject>.*?)$/
-    data = block_string.match(regex)
-    commit.subject = data[:subject]
-    commit.time = Time.parse(data[:date])
-    commit.date = commit.time.to_date
+      commit = parse_record(record, renames)
+      next unless commit
 
-    get_commit_author(data, commit, group_by)
-    get_commit_summary(block_string, commit)
+      key = user_key(commit, group_by)
+      user = users[key] ||= User.new(commit.author_name, commit.author_email)
+      commit.author = user
+      user.commits << commit
+      commits << commit
+    end
 
+    { users: users.values, commits: commits }
+  end
+
+  # A record is "<header>\n<numstat entries>" where every numstat entry ends in
+  # NUL. A commit without file changes (e.g. a merge) is "<header>\0".
+  def parse_record(record, renames)
+    header, stats = record.split(/[\n\0]/, 2)
+    sha, date, name, email, subject = header.split(FIELD_SEP, 5)
+    return unless sha && date
+
+    commit = Commit.new(sha)
+    commit.author_name  = name.to_s
+    commit.author_email = email.to_s
+    commit.subject      = subject.to_s
+    commit.time         = Time.iso8601(date)
+    commit.date         = commit.time.to_date
+    parse_numstat(stats.to_s, commit, renames)
     commit
   end
 
-  def get_commit_summary(block_string, commit)
-    regex = /^(?<insertions>\d+)\s+(?<deletions>\d+)\s+(?<filename>.*)$/
-    block_string.scan(regex).each do |summary|
+  # Entries look like "12\t3\tpath" or, for renames and copies,
+  # "12\t3\t" followed by two more NUL-terminated fields (old and new path).
+  # Binary files report "-" instead of line counts.
+  #
+  # git log lists newest commits first, so when a rename shows up every older
+  # entry for the old path belongs to the same file: `renames` maps old paths
+  # to the file's current name, keeping per-file stats together.
+  def parse_numstat(stats, commit, renames)
+    fields = stats.split("\0")
+    until fields.empty?
+      insertions, deletions, path = fields.shift.split("\t", 3)
+      next unless deletions
+
+      path = read_rename(fields, renames) if path.to_s.empty?
+      next unless path
+
       commit.summary << {
-        insertions: summary[0].to_i,
-        deletions: summary[1].to_i,
-        filename: summary[2]
+        insertions: insertions.to_i,
+        deletions: deletions.to_i,
+        filename: renames.fetch(path, path),
+        binary: insertions == '-'
       }
     end
   end
 
-  def get_commit_author(data, commit, group_by)
-    user = get_user(data[:name], data[:email], group_by)
-
-    commit.author = user
-    user.commits << commit
+  # Consumes the old/new path pair of a rename entry and returns the new path.
+  def read_rename(fields, renames)
+    old_path = fields.shift
+    new_path = fields.shift
+    renames[old_path] = renames.fetch(new_path, new_path) if old_path && new_path && old_path != new_path
+    new_path
   end
 
-  def get_user(name, email, group_by)
-    case group_by
-    when 'name'
-      u = @users.index { |user| user.name == name }
-    when 'email'
-      u = @users.index { |user| user.email == email }
-    end
-    return @users[u] if u
+  def user_key(commit, group_by)
+    group_by == 'email' ? commit.author_email.downcase : commit.author_name
+  end
 
-    @users << new_user = User.new(name, email)
-    new_user
+  # git emits whatever bytes are stored in the commit; older repositories
+  # often contain Latin-1 names and messages. Never let that crash parsing.
+  def clean(string)
+    string = string.dup.force_encoding(Encoding::UTF_8)
+    string = string.scrub('?') unless string.valid_encoding?
+    string.ascii_only? ? string : string.unicode_normalize(:nfc)
   end
 end

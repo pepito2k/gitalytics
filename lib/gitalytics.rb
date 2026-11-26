@@ -13,7 +13,8 @@ module Gitalytics
   module_function
 
   def analyze(options)
-    data = GitLog.parse_git_log(options[:group_by], since: options[:since], until_date: options[:until])
+    data = GitLog.parse_git_log(options[:group_by], since: options[:since], until_date: options[:until],
+                                                    no_merges: options[:no_merges])
 
     case options[:format]
     when 'html'

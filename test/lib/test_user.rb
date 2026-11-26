@@ -14,6 +14,7 @@ class TestUser < Minitest::Test
   def create_commit(hash, date, summary_data)
     Commit.new(hash).tap do |commit|
       commit.date = Date.parse(date)
+      commit.time = commit.date.to_time
       summary_data.each { |summary| commit.summary << summary }
     end
   end

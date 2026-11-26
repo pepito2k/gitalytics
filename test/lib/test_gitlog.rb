@@ -4,90 +4,119 @@ require File.join(File.dirname(__FILE__), '..', 'test_helper.rb')
 require 'minitest/autorun'
 require 'gitalytics/gitlog'
 
-class TestCommit < Minitest::Test
-  GIT_LOG = File.read(File.join('test', 'files', 'git_log'))
+class TestGitLog < Minitest::Test
+  RS = GitLog::RECORD_SEP
+  FS = GitLog::FIELD_SEP
 
-  def setup
-    GitLog.instance_variable_set(:@users, [])
+  def header(sha, date, name, email, subject)
+    "#{RS}#{[sha * 40, date, name, email, subject].join(FS)}"
   end
 
-  def test_get_blocks
-    expected_blocks = [
-      File.read(File.join('test', 'files', 'block1')),
-      File.read(File.join('test', 'files', 'block2')),
-      File.read(File.join('test', 'files', 'block3'))
-    ]
-
-    expected_commits = %w[
-      bea63e76c7c6d5afd42ac5b24a911b36e5c261f9
-      d392710a9e657c72e73ca87df3ed2c8c802441e4
-      9a99ae5dbc1eaadf268ca925cce9b68d10216151
-    ]
-
-    blocks = GitLog.get_blocks(GIT_LOG)
-    # require 'byebug'; byebug
-
-    assert_equal(expected_commits, blocks.map(&:first))
-    assert_equal(expected_blocks, blocks.map(&:last))
+  def parse(*records, group_by: 'name')
+    GitLog.parse(records.join.each_line(RS), group_by)
   end
 
-  def test_parse_block
-    blocks = GitLog.get_blocks(GIT_LOG)
-    hash, block = blocks.last
+  def test_parses_header_and_numstat
+    data = parse(header('a', '2024-03-01T10:20:30-03:00', 'Ann <Dev>', 'ann@x.io', 'Fix => thing'),
+                 "\n3\t1\tlib/a b.rb\0\0")
+    commit = data[:commits].first
 
-    commit = GitLog.parse_block(hash, block, 'email')
+    assert_equal 'a' * 40, commit.sha
+    assert_equal 'Ann <Dev>', commit.author.name
+    assert_equal 'Fix => thing', commit.subject
+    assert_equal Time.iso8601('2024-03-01T10:20:30-03:00'), commit.time
+    assert_equal Date.new(2024, 3, 1), commit.date
+    assert_equal [{ insertions: 3, deletions: 1, filename: 'lib/a b.rb', binary: false }], commit.summary
+  end
 
-    assert_equal(
-      ['README.md', 'bin/gitalytics', 'gitalytics.gemspec', 'lib/gist.rb', 'lib/gitalytics.rb'],
-      commit.files_committed
+  def test_binary_files_are_counted_without_lines
+    commit = parse(header('a', '2024-03-01T10:00:00+00:00', 'Ann', 'ann@x.io', 'logo'),
+                   "\n-\t-\tlogo.png\0\0")[:commits].first
+
+    assert_equal ['logo.png'], commit.files_committed
+    assert commit.summary.first[:binary]
+    assert_equal 0, commit.insertions
+  end
+
+  def test_merge_commits_without_stats
+    data = parse(header('b', '2024-03-02T10:00:00+00:00', 'Ann', 'ann@x.io', 'Merge branch x'), "\0",
+                 header('a', '2024-03-01T10:00:00+00:00', 'Ann', 'ann@x.io', 'one'), "\n1\t0\ta.rb\0\0")
+
+    assert_equal 2, data[:commits].size
+    assert_empty data[:commits].first.summary
+  end
+
+  def test_renames_are_attributed_to_the_current_path
+    data = parse(
+      header('c', '2024-03-03T10:00:00+00:00', 'Ann', 'ann@x.io', 'edit'), "\n2\t0\tlib/new.rb\0\0",
+      header('b', '2024-03-02T10:00:00+00:00', 'Ann', 'ann@x.io', 'move'), "\n1\t1\t\0lib/old.rb\0lib/new.rb\0\0",
+      header('a', '2024-03-01T10:00:00+00:00', 'Ann', 'ann@x.io', 'add'), "\n5\t0\tlib/old.rb\0\0"
     )
-    assert_equal(77, commit.insertions)
-    assert_equal(0, commit.deletions)
-    assert_equal('Gonzalo Robaina', commit.author.name)
-    assert_equal('gonzalor@gmail.com', commit.author.email)
-    assert_equal('initial commit', commit.subject)
+
+    assert_equal [['lib/new.rb']] * 3, data[:commits].map(&:files_committed)
   end
 
-  def test_get_user_creates_the_user
-    blocks = GitLog.get_blocks(GIT_LOG)
-    hash, block = blocks.last
-    GitLog.parse_block(hash, block, 'email')
+  def test_rename_chains_resolve_to_the_latest_name
+    data = parse(
+      header('c', '2024-03-03T10:00:00+00:00', 'Ann', 'ann@x.io', 'b to c'), "\n0\t0\t\0b.rb\0c.rb\0\0",
+      header('b', '2024-03-02T10:00:00+00:00', 'Ann', 'ann@x.io', 'a to b'), "\n0\t0\t\0a.rb\0b.rb\0\0",
+      header('a', '2024-03-01T10:00:00+00:00', 'Ann', 'ann@x.io', 'add'), "\n5\t0\ta.rb\0\0"
+    )
 
-    user = GitLog.get_user('name', 'email@example.com', 'name')
-    users = GitLog.instance_variable_get('@users')
-
-    assert_equal(2, users.count)
-    assert_equal(user, users.last)
-    assert_equal('name', user.name)
-    assert_equal('email@example.com', user.email)
+    assert_equal [['c.rb']] * 3, data[:commits].map(&:files_committed)
   end
 
-  def test_get_user_returns_the_user
-    [User.new('name', 'email@example.com')]
+  def test_invalid_bytes_do_not_crash
+    name = (+"Jos\xE9").force_encoding(Encoding::BINARY)
+    commit = parse(header('a', '2024-03-01T10:00:00+00:00', name, 'jose@x.io', 'hola'),
+                   "\n1\t0\ta.rb\0\0")[:commits].first
 
-    user = GitLog.get_user('name', 'email@example.com', 'email')
-    # assert_equal(user, users.last)
-    assert_equal('name', user.name)
-    assert_equal('email@example.com', user.email)
+    assert_predicate commit.author.name, :valid_encoding?
+    assert_equal 'Jos?', commit.author.name
   end
 
-  def test_get_commit_author_links_user_and_commit
-    data = { name: 'name', email: 'email@example.com' }
-    commit = Commit.new(hash)
+  def test_names_are_unicode_normalized
+    decomposed = 'José'
+    data = parse(header('b', '2024-03-02T10:00:00+00:00', decomposed, 'j@x.io', 'two'), "\0",
+                 header('a', '2024-03-01T10:00:00+00:00', 'José', 'j@x.io', 'one'), "\0")
 
-    GitLog.get_commit_author(data, commit, 'name')
-    # assert_equal(users.last, commit.author)
-    # assert_equal(users.last.commits.last, commit)
+    assert_equal ['José'], data[:users].map(&:name)
+  end
+
+  def test_group_by_name
+    data = parse(header('b', '2024-03-02T10:00:00+00:00', 'Ann', 'ann@work.io', 'two'), "\0",
+                 header('a', '2024-03-01T10:00:00+00:00', 'Ann', 'ann@home.io', 'one'), "\0")
+
+    assert_equal 1, data[:users].size
+    assert_equal 2, data[:users].first.commits.size
+  end
+
+  def test_group_by_email_ignores_case
+    data = parse(header('c', '2024-03-03T10:00:00+00:00', 'Ann', 'Ann@X.io', 'three'), "\0",
+                 header('b', '2024-03-02T10:00:00+00:00', 'Ann B.', 'ann@x.io', 'two'), "\0",
+                 header('a', '2024-03-01T10:00:00+00:00', 'Bob', 'bob@x.io', 'one'), "\0",
+                 group_by: 'email')
+
+    assert_equal([2, 1], data[:users].map { |u| u.commits.size })
+  end
+
+  def test_parse_does_not_keep_state_between_calls
+    record = [header('a', '2024-03-01T10:00:00+00:00', 'Ann', 'ann@x.io', 'one'), "\0"]
+    parse(*record)
+
+    assert_equal 1, parse(*record)[:commits].size
   end
 
   def test_git_log_command_without_filters
-    assert_equal ['git', 'log', '--numstat', '--pretty=%H %ai %an <%ae> %s'], GitLog.git_log_command
+    assert_equal ['git', '-c', 'core.quotePath=false', 'log', '--numstat', '-z', GitLog::PRETTY],
+                 GitLog.git_log_command
   end
 
-  def test_git_log_command_with_date_filters
-    cmd = GitLog.git_log_command(since: '2024-01-01', until_date: '6 months ago')
+  def test_git_log_command_with_filters
+    cmd = GitLog.git_log_command(since: '2024-01-01', until_date: '6 months ago', no_merges: true)
 
     assert_includes cmd, '--since=2024-01-01'
     assert_includes cmd, '--until=6 months ago'
+    assert_includes cmd, '--no-merges'
   end
 end
