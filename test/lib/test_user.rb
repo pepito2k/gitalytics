@@ -4,7 +4,7 @@ require 'gitalytics/user'
 require 'gitalytics/commit'
 require 'date'
 
-class TestUser < MiniTest::Unit::TestCase
+class TestUser < Minitest::Test
   def setup
     @user = User.new('John ñ Doe', 'john@doe.com')
   end

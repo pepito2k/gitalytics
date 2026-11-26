@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), '..', 'test_helper.rb')
 require 'minitest/autorun'
 require 'gitalytics/gitlog'
 
-class TestCommit < MiniTest::Unit::TestCase
+class TestCommit < Minitest::Test
   GIT_LOG = File.read(File.join('test', 'files', 'git_log'))
 
   def setup

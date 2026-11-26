@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), '..', 'test_helper.rb')
 require 'minitest/autorun'
 require 'gitalytics/commit'
 
-class TestCommit < MiniTest::Unit::TestCase
+class TestCommit < Minitest::Test
   def build_commit(commit)
     commit.summary << { insertions: 3, deletions: 2, filename: 'a.rb' }
     commit.summary << { insertions: 4, deletions: 3, filename: 'b.rb' }
